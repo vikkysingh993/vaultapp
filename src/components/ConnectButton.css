@@ -1,0 +1,78 @@
+.connect-button-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: inherit;
+}
+
+.wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.wallet-connected {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.wallet-connected p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.wallet-connected p strong {
+  color: #ffa500;
+  font-weight: 600;
+}
+
+.wallet-connected p small {
+  font-size: 0.85rem;
+  color: #ddd;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+
+
+.wallet-connect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.wallet-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ddd;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .connect-button-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .wallet-info {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .wallet-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .disconnect-btn {
+    width: 100%;
+  }
+}

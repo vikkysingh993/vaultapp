@@ -1,0 +1,11 @@
+stack-history get api
+{
+    wallet address, 
+    end stack plan 
+    claim amount
+    claim status (stacked/claimed)
+}
+
+in case of cliam mai same transfer api hi call hogi 
+but isme peramter to address, amount,
+private key from address private key
