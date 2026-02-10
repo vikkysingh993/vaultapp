@@ -22,17 +22,19 @@ export default function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="toggler1">
-          <ul className="navbar-nav m-auto">
+          <ul className="navbar-nav ms-auto     align-items-center">
             <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/launchpad">Launchpad</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/staking-farming">Stake/Farm</Link></li>
             <li className="nav-item"><a className="nav-link" href="/#how-to-start">How to Start</a></li>
             <li className="nav-item"><Link className="nav-link" to="/contact-us">Contact Us</Link></li>
+            <li className="nav-item"> <Link to="/create-coin" className="btn btn_man ms-md-3">Create Coin</Link></li>
+           
           </ul>
         </div>
 
-        <div className="connect_btn">
-          <Link to="/create-coin" className="btn btn_man me-3">Create Coin</Link>
+        <div className="connect_btn d-flex align-items-center ms-md-4">
+          
           <ConnectButton />
         </div>
       </div>

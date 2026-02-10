@@ -1278,6 +1278,74 @@ body .css-1dimb5e-singleValue{color:#fff;}
 .navbar-toggler{ color: #fff;}
 
 
+
+ 
+
+
+.slider-nav .coin_box { 
+    margin: 0 10px;
+}
+.in_page .slick-list { 
+    margin: 0 -10px;
+}
+.slider-nav .slick-arrow {
+    position: absolute;
+    right: 0;
+    top: -55px;
+    font-size: 0;
+    border: 0;
+    background: hsl(0deg 0% 100% / 5%);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 7px;
+}
+.slider-nav .slick-prev{ right: 45px; }
+.slider-nav .slick-prev:after{content:"\F284" ;font-family: bootstrap-icons !important;      font-size: 20px;}
+.slider-nav .slick-next:after{content:"\F285" ;font-family: bootstrap-icons !important;       font-size: 20px;}
+
+.token_tab button{    min-width: 80px;
+    padding: 7px 15px;
+    border: 1px solid hsl(36.36deg 98.8% 67.25% / 25%);
+    color: #fff;
+    background: hsl(0deg 0% 100% / 5%);
+    border-radius: 8px;
+    margin-right: 10px;}
+.token_tab button.active{ background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important; color: #000;}
+.coin_box_big .coin_box_left {
+    width: 105px;
+    height: 105px; 
+    min-width: 105px;
+    
+}
+.coin_box_left img{  width: 100%; height: 100%; object-fit: cover;}
+.op_05{ opacity: 0.5;}
+.progress-bar { 
+    background-color: #febd59; 
+}
+.progress {
+    height: 0.5rem;
+    background-color: rgb(255 255 255 / 20%); 
+}
+.wsn{white-space: nowrap;}
+.h100{    height: 100%;}
+.text-success { 
+    color: rgb(39 202 126) !important;
+}
+.input_search{    padding: 10px 10px 10px 40px;
+    background: hsl(0deg 0% 100% / 2%); outline: none!important;
+    border: 1px solid hsl(36.36deg 98.8% 67.25% / 10%);
+    border-radius: 16px; color: #fff;
+    width: 100%;}
+    .search_icon{    position: absolute;
+    left: 15px;
+    top: 15px;
+    opacity: 0.5;}
+.min-w105 {    min-width: 105px;}
+ 
+
+
+
+
 @media (max-width: 1200px) {.navbar-collapse .navbar-nav .nav-link { margin: 1rem 0.3rem;} }
 @media (min-width: 991px) {.d-mb2{    margin-bottom: -2px;} 
 .tooltip_out:hover .tooltip_in {
@@ -1291,7 +1359,11 @@ body .css-1dimb5e-singleValue{color:#fff;}
   }
 }
 @media (max-width: 991px) {
-.connect_btn{ position: absolute;  right: 50px; top: 7px;}
+.connect_btn {
+    position: absolute;
+    right: 60px;
+    top: 2px;
+}
 .tooltip_out .tooltip_in.open {
   opacity: 1;
   pointer-events: auto;
@@ -1330,7 +1402,7 @@ body .css-1dimb5e-singleValue{color:#fff;}
 }
 .connect_btn .btn_man{    border-radius: 13px;    padding: 6px 18px;}
  .drop .nav-link {  display: none;}
- .navbar{    position: fixed;    transition: inherit;}
+ .navbar{    position: fixed;    transition: inherit;    background: #1b1d2a;}
  .navbar-collapse .navbar-nav .nav-link {
     margin: 0.3rem 1rem;
 }
@@ -1338,13 +1410,26 @@ body .css-1dimb5e-singleValue{color:#fff;}
 
 
  .navbar-collapse {background: #11192c;    padding: 20px;}
- .connect_btn{ display: none;}
+.faq button { 
+    font-size: 16px; 
+    padding: 15px 30px 15px 15px;
+}
+.faq .accordion-button::after { 
+    right: 16px; 
+}
+.navbar-toggler { 
+    font-size: 26px;
+    padding-right: 6px; 
+}
+.navbar-toggler:focus {  
+    box-shadow: 0!important;
+}
 }
 
 @media (max-width: 768px) {
   
-.roadmap2, .logo2{ display: block;}
-.logo{height: 45px;  }
+.roadmap2, .logo2{ display: block;} 
+.logo{height: 32px;  } 
 .roadmap1, nav .navbar-brand span{ display: none;}
 .progress3 div{display: flex;    align-items: center;}
 .progress3 div .scale_btn{margin-left: 7px;}
@@ -1444,69 +1529,5 @@ span.type1 { height: 40px;}
 .launchpad_box2 .btn_man {
     padding: 8px 30px;
     font-size: 18px;
+} 
 }
-}
-
-
- 
-
-
-.slider-nav .coin_box { 
-    margin: 0 10px;
-}
-.in_page .slick-list { 
-    margin: 0 -10px;
-}
-.slider-nav .slick-arrow {
-    position: absolute;
-    right: 0;
-    top: -55px;
-    font-size: 0;
-    border: 0;
-    background: hsl(0deg 0% 100% / 5%);
-    color: #fff;
-    padding: 2px 7px;
-    border-radius: 7px;
-}
-.slider-nav .slick-prev{ right: 45px; }
-.slider-nav .slick-prev:after{content:"\F284" ;font-family: bootstrap-icons !important;      font-size: 20px;}
-.slider-nav .slick-next:after{content:"\F285" ;font-family: bootstrap-icons !important;       font-size: 20px;}
-
-.token_tab button{    min-width: 80px;
-    padding: 7px 15px;
-    border: 1px solid hsl(36.36deg 98.8% 67.25% / 25%);
-    color: #fff;
-    background: hsl(0deg 0% 100% / 5%);
-    border-radius: 8px;
-    margin-right: 10px;}
-.token_tab button.active{ background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important; color: #000;}
-.coin_box_big .coin_box_left {
-    width: 105px;
-    height: 105px; 
-    min-width: 105px;
-    
-}
-.coin_box_left img{  width: 100%; height: 100%; object-fit: cover;}
-.op_05{ opacity: 0.5;}
-.progress-bar { 
-    background-color: #febd59; 
-}
-.progress {
-    height: 0.5rem;
-    background-color: rgb(255 255 255 / 20%); 
-}
-.wsn{white-space: nowrap;}
-.h100{    height: 100%;}
-.text-success { 
-    color: rgb(39 202 126) !important;
-}
-.input_search{    padding: 10px 10px 10px 40px;
-    background: hsl(0deg 0% 100% / 2%); outline: none!important;
-    border: 1px solid hsl(36.36deg 98.8% 67.25% / 10%);
-    border-radius: 16px; color: #fff;
-    width: 100%;}
-    .search_icon{    position: absolute;
-    left: 15px;
-    top: 15px;
-    opacity: 0.5;}
-.min-w105 {    min-width: 105px;}

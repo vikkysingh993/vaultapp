@@ -19,7 +19,7 @@ export default function Header(): JSX.Element {
 
           <h4 className="mb-4">Building Tomorrow’s Innovation Today.</h4>
 
-          <div className="login_btns">
+          <div className="login_btns ">
             <Link to="/create-coin" className="btn btn_man me-3">
               Create Coin
             </Link>

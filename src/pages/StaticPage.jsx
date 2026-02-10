@@ -6,13 +6,24 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 export default function StaticPage() {
   const { slug } = useParams();
+  console.log("Slug from URL:", slug);
+
   const [page, setPage] = useState(null);
 
   useEffect(() => {
-    api.get(`/pages/${slug}`)
-      .then(res => setPage(res.data))
-      .catch(() => setPage(false));
-  }, [slug]);
+  console.log("🔥 useEffect fired, slug =", slug);
+
+  api.get(`/pages/${slug}`)
+    .then(res => {
+      console.log("✅ API success", res.data);
+      setPage(res.data?.data || res.data);
+    })
+    .catch(err => {
+      console.error("❌ API error", err);
+      setPage(false);
+    });
+}, [slug]);
+
 
   if (page === null) return null;
   if (page === false) return <h2>Page not found</h2>;

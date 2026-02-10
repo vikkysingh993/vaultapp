@@ -14,10 +14,10 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/create-coin" element={<CreateCoin />} />
         {/* <Route path="/occy-token" element={<OccyToken />} /> */}
-
-        <Route path="/occy-token/:tokenAddress?" element={<OccyToken />} />
-        <Route path="/:slug" element={<StaticPage />} />
         <Route path="/launchpad" element={<Launchpad />} />
+        <Route path="/occy-token/:tokenAddress?" element={<OccyToken />} />
+        
+        <Route path="/:slug" element={<StaticPage />} />
       </Routes>
     </AuthProvider>
   );

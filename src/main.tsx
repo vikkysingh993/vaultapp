@@ -5,13 +5,33 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "./style.css"; // ✅ your custom theme css
-import "./appkit-init.js"; // initialize Reown AppKit web components
+import "./style.css";
+import "./appkit-init.js";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+// 🔒 Disable right click & devtools
+// document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+// document.addEventListener("keydown", (e) => {
+//   if (
+//     e.key === "F12" ||
+//     (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+//     (e.ctrlKey && e.key === "U")
+//   ) {
+//     e.preventDefault();
+//   }
+// });
+
+// // 🔇 Disable console in production
+// if (import.meta.env.PROD) {
+//   console.log = () => {};
+//   console.warn = () => {};
+//   console.error = () => {};
+// }
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 );
+

@@ -65,9 +65,20 @@ useEffect(() => {
 
 
 
-  const OCCY = process.env.OCCY_TOKEN_ADDRESS_ETH ||
-  "0xa4AB1A20c710cc956B72fe4C57b65613d1Bb8727";
-  const USDT = token?.tokenAddress;
+  const USDT_BY_CHAIN = {
+    137: import.meta.env.USDT_TOKEN_ADDRESS_POL,     // Polygon
+    80001: import.meta.env.USDT_TOKEN_ADDRESS_POL,  // Polygon testnet (optional)
+
+    1: import.meta.env.USDT_TOKEN_ADDRESS_ETH,      // Ethereum
+    11155111: import.meta.env.USDT_TOKEN_ADDRESS_ETH, // Sepolia
+
+    56: import.meta.env.USDT_TOKEN_ADDRESS_BSC,     // BSC
+    97: import.meta.env.USDT_TOKEN_ADDRESS_BSC,     // BSC Testnet
+
+    14601: import.meta.env.USDT_TOKEN_ADDRESS_SONIC // Sonic
+  };
+  const USDT = user?.chainId ? USDT_BY_CHAIN[user?.chainId] : null;
+  const OCCY = token?.tokenAddress;
   
   useEffect(() => {
     if (walletProvider && isConnected && address) {
@@ -114,8 +125,8 @@ const handleSwap = async (type) => {
 
     const txHash = await swapTokenFrontend({
       userAddress: address,
-      tokenIn: isBuy ? USDT : OCCY,
-      tokenOut: isBuy ? OCCY : USDT,
+      tokenIn: isBuy ? OCCY : USDT,
+      tokenOut: isBuy ? USDT : OCCY,
       amountIn: amount,
     });
      const raw = sessionStorage.getItem("authUser");
@@ -125,22 +136,22 @@ const handleSwap = async (type) => {
     const formData = new FormData();
       formData.append("walletAddress", address);
       formData.append("swapType", type.toUpperCase());
-      formData.append("tokenIn", type === "buy" ? USDT : OCCY);
-      formData.append("tokenOut", type === "sell" ? OCCY : USDT);
+      formData.append("tokenIn", type === "buy" ? OCCY : USDT);
+      formData.append("tokenOut", type === "sell" ? USDT : OCCY);
       formData.append("amountIn", amount);
       formData.append("txHash", txHash);
-      formData.append("chainId", user?.chainId || 11155111);
+      formData.append("chainId", user?.chainId);
       formData.append("userId", user?.id || null);
     await api.post(
       "/swaps",
       {
         walletAddress: address,
         swapType: type.toUpperCase(),
-        tokenIn: type === "buy" ? USDT : OCCY,
-        tokenOut: type === "sell" ? OCCY : USDT,
+        tokenIn: type === "buy" ? OCCY : USDT,
+        tokenOut: type === "sell" ? USDT : OCCY,
         amountIn: amount,
         txHash: txHash,
-        chainId: user?.chainId || 11155111,
+        chainId: user?.chainId,
         userId: user?.id || null
       },
       {
@@ -242,8 +253,17 @@ return (
                       placeholder="Enter amount"
                     />
                     <span className="d-flex input_coin gap-2">
-                      <span>OCCY</span>
-                      <img src="img/about.png" alt="coin" className="img-fluid" />
+                      <span>{token?.name || "Token"}</span>
+                      <img
+                        src={
+                          token?.logo
+                            ? `${import.meta.env.VITE_API_IMG_URL}${token.logo}`
+                            : "/img/about.png"
+                        }
+                        alt={token?.name || "token"}
+                        className="img-fluid"
+                        style={{ width: "20px", height: "20px", objectFit: "contain" }}
+                      />
                     </span>
                   </div>
                 </div>

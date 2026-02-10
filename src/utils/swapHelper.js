@@ -19,11 +19,16 @@ export async function swapTokenFrontend({
 
   // approve
   const tokenContract = new ethers.Contract(tokenIn, ERC20_ABI, signer);
+  console.log("Approving token transfer...",tokenContract);
+  console.log("tokenIn:", tokenIn);
+console.log("tokenOut:", tokenOut);
+console.log("ROUTER:", ROUTER_ADDRESS);
+
   const allowance = await tokenContract.allowance(
     userAddress,
     ROUTER_ADDRESS
   );
-
+  console.log("Allowance:",allowance, "Parsed Amount:", parsedAmount);
   if (allowance < parsedAmount) {
     const tx = await tokenContract.approve(
       ROUTER_ADDRESS,

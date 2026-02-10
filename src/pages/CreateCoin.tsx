@@ -8,23 +8,29 @@ import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import api from "../config/axios";
-
+import { parseBlockchainError } from "../utils/parseBlockchainError";
 
 
 // ================= CONFIG =================
 const FREE_LIMIT = 1000; // OCC
-const PLATFORM_FEE = "10"; // 10 OCC
-// const OCC_TOKEN_ADDRESS = "0xa4AB1A20c710cc956B72fe4C57b65613d1Bb8727"; // testnet
+const PLATFORM_FEE_OCC = "10"; // 10 OCC for Sonic
+const PLATFORM_FEE_USDT = "10"; // 10 USDT for other chains
 
 const OCC_TOKEN_ADDRESS = "0x307Ad911cF5071be6Aace99Cb2638600212dC657"; // mainnet
+const USDT_TOKEN_ADDRESSES = {
+  ethereum: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+  polygon: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+  base: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  sonic: null // No USDT fee for Sonic
+};
 
 const FIXED_WALLET =
   process.env.FIXED_WALLET_ETH ||
-  "0xE573DE17dAA654BC6D8e62D765feC77d6Ef3f0D4";
+  "0x78E6c8BE860257A3c9730a0095b11437eA5018bC";
 
 const ROYALTY_WALLET =
   process.env.ROYALTY_WALLET_ETH ||
-  "0xE573DE17dAA654BC6D8e62D765feC77d6Ef3f0D4";
+  "0x78E6c8BE860257A3c9730a0095b11437eA5018bC";
 
 const ERC20_ABI = [
   "function decimals() view returns (uint8)",
@@ -32,8 +38,13 @@ const ERC20_ABI = [
   "function transfer(address,uint256) returns (bool)",
 ];
 
-// ================= NETWORK CONFIG (MAINNET) ================= //
-const CHAINS = { ethereum: { chainId: "0x1", name: "Ethereum Mainnet" }, polygon: { chainId: "0x89", name: "Polygon Mainnet" }, base: { chainId: "0x2105", name: "Base Mainnet" }, sonic: { chainId: "0x92", name: "Sonic Mainnet" }, };
+const CHAINS = {
+  ethereum: { chainId: "0x1", name: "Ethereum Mainnet" },
+  polygon: { chainId: "0x89", name: "Polygon Mainnet" },
+  base: { chainId: "0x2105", name: "Base Mainnet" },
+  sonic: { chainId: "0x92", name: "Sonic Mainnet" },
+};
+
 export default function CreateCoin() {
   const { user } = useAuth();
   const appkit = useAppKitProvider();
@@ -47,8 +58,8 @@ export default function CreateCoin() {
     chain: "",
     logo: null,
   });
-
   const [deploying, setDeploying] = useState(false);
+  const [occBalance, setOccBalance] = useState(null);
 
   // ================= HELPERS =================
   const getWalletProvider = () => {
@@ -60,15 +71,12 @@ export default function CreateCoin() {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "logo" && files && files[0]) {
-        setForm({ ...form, logo: files[0] });
-
-        // 🔥 PREVIEW
-        const previewUrl = URL.createObjectURL(files[0]);
-        setLogoPreview(previewUrl);
-      } else {
-        setForm({ ...form, [name]: value });
-      }
-    // setForm({ ...form, [name]: name === "logo" ? files[0] : value });
+      setForm({ ...form, logo: files[0] });
+      const previewUrl = URL.createObjectURL(files[0]);
+      setLogoPreview(previewUrl);
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   // ================= SWITCH NETWORK =================
@@ -82,70 +90,119 @@ export default function CreateCoin() {
     });
   };
 
-// ================= ON-CHAIN OCC BALANCE =================
-const getOnChainOccBalance = async (signer) => {
-  const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
+  // ================= ON-CHAIN OCC BALANCE =================
+  const getOnChainOccBalance = async (signer) => {
+    const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
+    const userAddr = await signer.getAddress();
+    
+    let decimals = 18;
+    try {
+      decimals = await token.decimals();
+    } catch (err) {
+      console.warn('decimals() failed, using 18:', err.message);
+    }
+    
+    const bal = await token.balanceOf(userAddr);
+    return Number(ethers.formatUnits(bal, decimals));
+  };
+
+  // ================= PAY FEE BASED ON CHAIN =================
+// ================= PAY FEE BASED ON CHAIN =================
+const payFee = async (signer, chain) => {
   const userAddr = await signer.getAddress();
   
-  let decimals = 18; // Default ERC20
-  try {
-    decimals = await token.decimals();
-  } catch (err) {
-    console.warn('decimals() failed, using 18:', err.message);
+  // OCC balance check ONLY on Sonic chain (where OCC contract exists)
+  let occBalance = 0;
+  if (chain === "sonic") {
+    occBalance = await getOnChainOccBalance(signer);
+    setOccBalance(occBalance);
   }
   
-  const bal = await token.balanceOf(userAddr);
-  return Number(ethers.formatUnits(bal, decimals));
-};
-  // ================= PAY PLATFORM FEE =================
-const payPlatformFeeInToken = async (signer) => {
-  const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
-  
-  let decimals = 18;
-  try {
-    decimals = await token.decimals();
-  } catch (err) {
-    console.warn('decimals() failed, using 18:', err.message);
-  }
-  
-  const amount = ethers.parseUnits(PLATFORM_FEE, decimals);
-  const userAddr = await signer.getAddress();
-  const bal = await token.balanceOf(userAddr);
-
-  if (bal < amount) {
-    throw new Error("Insufficient OCC balance for platform fee");
+  // Free if OCC >= 1000 (Sonic only) OR other chains (no OCC check needed)
+  if ((chain === "sonic" && occBalance >= FREE_LIMIT) || chain !== "sonic") {
+    console.log("Free deployment");
+    return { feePaid: "0", feeTxHash: "FREE", feeType: "FREE" };
   }
 
-  const tx = await token.transfer(FIXED_WALLET, amount);
-  await tx.wait();
-  return tx.hash;
+  // Sonic = Charge OCC fee
+  if (chain === "sonic") {
+    const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
+    let decimals = 18;
+    try {
+      decimals = await token.decimals();
+    } catch (err) {
+      console.warn('OCC decimals() failed:', err);
+    }
+    
+    const amount = ethers.parseUnits(PLATFORM_FEE_OCC, decimals);
+    const bal = await token.balanceOf(userAddr);
+
+    if (bal < amount) {
+      throw new Error(`Insufficient OCC. Need ${PLATFORM_FEE_OCC}, have ${occBalance.toFixed(2)}`);
+    }
+
+    const tx = await token.transfer(FIXED_WALLET, amount);
+    await tx.wait();
+    return { feePaid: PLATFORM_FEE_OCC, feeTxHash: tx.hash, feeType: "OCC" };
+  } 
+  // Other chains = Charge USDT fee
+  else {
+    const usdtAddress = USDT_TOKEN_ADDRESSES[chain];
+    if (!usdtAddress) {
+      throw new Error("USDT address not configured");
+    }
+
+    const usdtToken = new ethers.Contract(usdtAddress, ERC20_ABI, signer);
+    let decimals = 6;
+    try {
+      decimals = await usdtToken.decimals();
+    } catch (err) {
+      console.warn('USDT decimals() failed:', err);
+    }
+    
+    const amount = ethers.parseUnits(PLATFORM_FEE_USDT, decimals);
+    const bal = await usdtToken.balanceOf(userAddr);
+
+    if (bal < amount) {
+      const usdtBal = Number(ethers.formatUnits(bal, decimals));
+      throw new Error(`Insufficient USDT. Need ${PLATFORM_FEE_USDT}, have ${usdtBal.toFixed(2)}`);
+    }
+
+    const tx = await usdtToken.transfer(FIXED_WALLET, amount);
+    await tx.wait();
+    return { feePaid: PLATFORM_FEE_USDT, feeTxHash: tx.hash, feeType: "USDT" };
+  }
 };
 
   // ================= MAIN FLOW =================
   const deployToken = async () => {
     try {
+      setDeploying(true);
       const walletProvider = getWalletProvider();
-      console.log('Wallet provider:', walletProvider); // Debug log
       
       if (!walletProvider) {
         popupError("Wallet Required", "Please connect your wallet");
         return;
       }
 
-      // ✅ Wallet address log करें
       const provider = new ethers.BrowserProvider(walletProvider);
       const signer = await provider.getSigner();
       const userAddress = await signer.getAddress();
       console.log('Connected wallet:', userAddress);
 
-      // Skip OCC check completely ✅
-      const onChainBalance = FREE_LIMIT + 1; // Force FREE mode
-      let platformFeeTx = "FREE";
+      if (!form.chain) {
+        popupError("Chain Required", "Please select a blockchain network");
+        return;
+      }
 
       // Network switch
       await ensureCorrectNetwork(form.chain);
 
-      // Direct deployment
+      // Pay fee based on chain and OCC balance
+      const feeResult = await payFee(signer, form.chain);
+      console.log('Fee result:', feeResult);
+
+      // Deploy token
       const factory = new ethers.ContractFactory(
         tokenArtifact.abi,
         tokenArtifact.bytecode,
@@ -164,7 +221,7 @@ const payPlatformFeeInToken = async (signer) => {
       console.log('Deployment TX:', await contract.waitForDeployment());
       const tokenAddress = await contract.getAddress();
 
-      // Backend API call (same as before)
+      // Backend API call
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("symbol", form.symbol);
@@ -172,9 +229,10 @@ const payPlatformFeeInToken = async (signer) => {
       formData.append("description", form.description);
       formData.append("chain", form.chain);
       formData.append("tokenAddress", tokenAddress);
-      formData.append("creatorWallet", userAddress); // Use actual address
-      formData.append("feePaid", "0");
-      formData.append("feeTxHash", platformFeeTx);
+      formData.append("creatorWallet", userAddress);
+      formData.append("feePaid", feeResult.feePaid);
+      formData.append("feeTxHash", feeResult.feeTxHash);
+      formData.append("feeType", feeResult.feeType);
 
       if (form.logo) formData.append("logo", form.logo);
 
@@ -184,18 +242,80 @@ const payPlatformFeeInToken = async (signer) => {
         },
       });
 
-      popupSuccess("Token Created 🎉", `Token Address:\n${tokenAddress}`, 
+      popupSuccess(
+        "Token Created 🎉", 
+        `Token Address:\n${tokenAddress}\n\nFee: ${feeResult.feeType}`,
         () => navigate("/occy-token")
       );
 
     } catch (err) {
-      console.error('Full error:', err);
-      popupError("Error", err.message);
+      console.error('🚨 FULL ERROR OBJECT:', err);
+      
+      // 🔥 DETAILED ERROR HANDLING FOR ALL CASES
+      let errorTitle = "Error";
+      let errorMessage = "Something went wrong";
+
+      // 1. AXIOS/HTTP ERRORS (Backend DEX errors)
+      if (err.response?.data) {
+        const backendError = err.response.data;
+        
+        if (backendError.error) {
+          errorTitle = "Blockchain Error";
+          errorMessage = backendError.error;
+          
+          // Show additional details if available
+          if (backendError.details) {
+            errorMessage += `\n\nDetails: ${JSON.stringify(backendError.details)}`;
+          }
+          if (backendError.code) {
+            errorTitle += ` (${backendError.code})`;
+          }
+        } else {
+          errorMessage = backendError.message || backendError.error || "Backend error";
+        }
+      }
+      // 2. ETHEREUM/WALLET ERRORS
+      else if (err.code) {
+        switch (err.code) {
+          case 4001:
+            errorTitle = "Transaction Rejected";
+            errorMessage = "You rejected the transaction";
+            break;
+          case 'INSUFFICIENT_FUNDS':
+          case -32002:
+            errorTitle = "Insufficient Funds";
+            errorMessage = "Not enough gas/native token";
+            break;
+          case 4902:
+          case 'NONCE_EXPIRED':
+            errorTitle = "Nonce Error";
+            errorMessage = "Please refresh and try again";
+            break;
+          case -32003:
+            errorTitle = "Wallet Locked";
+            errorMessage = "Unlock your wallet first";
+            break;
+          default:
+            errorTitle = `Wallet Error (${err.code})`;
+            errorMessage = err.message || "Wallet connection failed";
+        }
+      }
+      // 3. NETWORK/JAVASCRIPT ERRORS
+      else {
+        errorTitle = "Network Error";
+        errorMessage = err.message || "Connection failed. Check your internet";
+      }
+
+      // 🔥 SHOW DETAILED POPUP
+      // popupError(errorTitle, errorMessage);
+      const { title, message } = parseBlockchainError(err);
+      popupError(title, message);
+
+      
     } finally {
       setDeploying(false);
     }
   };
-
 
   // ================= UI (UNCHANGED) =================
   return (
@@ -227,6 +347,7 @@ const payPlatformFeeInToken = async (signer) => {
                         value={form.name}
                         onChange={handleChange}
                         placeholder="Enter Coin Name"
+                        required
                       />
                     </div>
 
@@ -238,6 +359,7 @@ const payPlatformFeeInToken = async (signer) => {
                         value={form.symbol}
                         onChange={handleChange}
                         placeholder="Enter Ticker"
+                        required
                       />
                     </div>
 
@@ -250,6 +372,7 @@ const payPlatformFeeInToken = async (signer) => {
                         value={form.supply}
                         onChange={handleChange}
                         placeholder="Enter Supply"
+                        required
                       />
                     </div>
 
@@ -260,6 +383,7 @@ const payPlatformFeeInToken = async (signer) => {
                         name="chain"
                         value={form.chain}
                         onChange={handleChange}
+                        required
                       >
                         <option value="">Select Chain</option>
                         <option value="ethereum">Ethereum Mainnet</option> 
@@ -309,10 +433,9 @@ const payPlatformFeeInToken = async (signer) => {
                       <i className="bi bi-cloud-upload d-block"></i>
                       <span>Upload</span>
                     </div>
-                    
                   </div>
                   
-                    {/* 🔥 LOGO PREVIEW */}
+                  {/* 🔥 LOGO PREVIEW */}
                   {logoPreview && (
                     <div style={{ marginTop: "10px", textAlign: "center" }}>
                       <img

@@ -194,7 +194,7 @@ export default function Home() {
               "beets.png",
               "occ.avif",
             ].map((src) => (
-              <div className="col-md-3 mb-4 mb-sm-0" key={src}>
+              <div className="col-md-3 mb-4 mb-sm-0 col-6" key={src}>
                 <div className="text-center">
                   <img className="img-fluid" src={`/img/${src}`} alt="partner" />
                 </div>
