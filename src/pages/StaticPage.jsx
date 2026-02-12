@@ -26,7 +26,7 @@ export default function StaticPage() {
 
 
   if (page === null) return null;
-  if (page === false) return <h2>Page not found</h2>;
+  if (page === false) return <h2>Page not found sdgd</h2>;
 
   return (
     <>

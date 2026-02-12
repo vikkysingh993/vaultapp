@@ -3,88 +3,101 @@ export function parseBlockchainError(err) {
   let message =
     "The transaction could not be completed. Please try again.";
 
-  const raw =
-    err?.reason ||
-    err?.error?.message ||
-    err?.data?.message ||
-    err?.message ||
-    "";
+  // 🔥 STEP 1: If axios backend error exists → extract that FIRST
+  const backendError = err?.response?.data;
 
-  const text = raw.toLowerCase();
+  if (backendError) {
+    if (backendError.userMessage) {
+      return {
+        title: "Transaction Failed",
+        message: backendError.userMessage,
+      };
+    }
 
-  // ---------------- USER REJECT ----------------
-  if (err.code === 4001) {
+    if (backendError.error === "LIQUIDITY_FAILED") {
+      return {
+        title: "Liquidity Failed",
+        message:
+          "We could not add liquidity for this token.\n\n" +
+          "Possible reasons:\n" +
+          "• Invalid token ratio\n" +
+          "• Token supply too low\n" +
+          "• Pool not supported\n\n" +
+          "Please try again with different values.",
+      };
+    }
+
+    if (backendError.code === "CALL_EXCEPTION") {
+      return {
+        title: "Blockchain Reverted",
+        message:
+          "The blockchain rejected the transaction.\n\n" +
+          "This usually happens when contract validation fails.\n" +
+          "Please verify token details and try again.",
+      };
+    }
+
+    if (backendError.error) {
+      return {
+        title: "Error",
+        message: backendError.error,
+      };
+    }
+  }
+  const isUserRejected =
+    err?.code === 4001 ||
+    err?.error?.code === 4001 ||
+    err?.info?.error?.code === 4001 ||
+    err?.message?.toLowerCase().includes("user denied") ||
+    err?.message?.toLowerCase().includes("user rejected");
+
+  if (isUserRejected) {
     return {
       title: "Transaction Cancelled",
-      message: "You rejected the transaction in your wallet.",
+      message: "You cancelled the transaction in your wallet."
     };
   }
 
-  // ---------------- CALL_EXCEPTION (🔥 MOST IMPORTANT) ----------------
-  if (err.code === "CALL_EXCEPTION") {
+  // 🔥 Backend error
+  if (err?.response?.data?.userMessage) {
     return {
-      title: "Liquidity Transaction Failed",
-      message:
-        "The liquidity transaction was reverted by the blockchain. " +
-        "This usually happens due to one of the following reasons:\n\n" +
-        "• Token amount is too low\n" +
-        "• Token decimals mismatch\n" +
-        "• Liquidity pool does not support this pair\n" +
-        "• Slippage is too low\n\n" +
-        "Please try again with a higher amount or different settings.",
+      title: "Transaction Failed",
+      message: err.response.data.userMessage
     };
   }
 
-  // ---------------- INSUFFICIENT FUNDS ----------------
-  if (text.includes("insufficient funds")) {
-    return {
-      title: "Insufficient Balance",
-      message:
-        "Your wallet does not have enough balance to pay for gas or tokens.",
-    };
-  }
+  // 🔥 STEP 2: Wallet errors
+    if (err.code === 4001) {
+      return {
+        title: "Transaction Cancelled",
+        message: "You rejected the transaction in your wallet.",
+      };
+    }
 
-  // ---------------- ALLOWANCE ----------------
-  if (text.includes("allowance")) {
-    return {
-      title: "Approval Required",
-      message:
-        "Token approval is required before continuing. Please approve and try again.",
-    };
-  }
+    if (err.code === "INSUFFICIENT_FUNDS") {
+      return {
+        title: "Insufficient Funds",
+        message:
+          "Your wallet does not have enough balance to complete this transaction.",
+      };
+    }
 
-  // ---------------- LIQUIDITY ----------------
-  if (text.includes("liquidity")) {
-    return {
-      title: "Low Liquidity",
-      message:
-        "There is not enough liquidity available for this pair. Try a smaller amount.",
-    };
-  }
+    if (err.code === "CALL_EXCEPTION") {
+      return {
+        title: "Smart Contract Error",
+        message:
+          "The transaction was reverted by the smart contract.\n" +
+          "Please review your inputs and try again.",
+      };
+    }
 
-  // ---------------- GAS ----------------
-  if (text.includes("out of gas")) {
-    return {
-      title: "Gas Limit Error",
-      message:
-        "The transaction ran out of gas. Please try again with higher gas.",
-    };
-  }
+  
 
-  // ---------------- NETWORK ----------------
-  if (text.includes("network")) {
-    return {
-      title: "Network Issue",
-      message:
-        "The blockchain network is busy. Please wait a moment and try again.",
-    };
-  }
-
-  // ---------------- FALLBACK ----------------
+  // 🔥 STEP 3: Fallback
   return {
     title,
-    message: raw
-      ? raw.replace(/execution reverted:?/i, "").trim()
-      : message,
+    message:
+      err?.message?.replace("Request failed with status code 400", "") ||
+      message,
   };
 }

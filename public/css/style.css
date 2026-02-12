@@ -1264,9 +1264,40 @@ body .css-1dimb5e-singleValue{color:#fff;}
 .input_coin img{
     height: 30px;    font-weight: 600;
 }
-.buy_sell_tab {
+/* .buy_sell_tab {
     background-color: hsl(0deg 0% 0% / 30%);
     border-radius: 10px;
+} */
+ .buy_sell_tab {
+  display: flex;
+  background: #1c1f2e;
+  border-radius: 12px;
+  padding: 5px;
+  gap: 5px;
+}
+.buy_sell_tab .nav-link {
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.buy_sell_tab .nav-link.active.buy {
+  background: linear-gradient(135deg, #00c853, #00e676);
+  color: #000;
+}
+
+.buy_sell_tab .nav-link.active.sell {
+  background: linear-gradient(135deg, #ff5252, #ff1744);
+  color: #fff;
+}
+
+.buy_sell_tab .nav-link:hover:not(.active) {
+  background: #2a2f45;
+  color: #fff;
 }
 .buy_sell_tab li{ width: 50%;}
 .buy_sell_tab li a{    width: 100%;    border-radius: 8px; color: #fff;    text-align: center;}

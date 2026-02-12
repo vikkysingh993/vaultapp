@@ -12,6 +12,8 @@ import DummyChart from "../components/DummyChart";
 import { parseLiquidity } from "../utils/parseLiquidity";
 import { decryptAddress } from "../utils/crypto";
 import api from "../config/axios";
+import { parseBlockchainError } from "../utils/parseBlockchainError";
+
 
 export default function OccyToken() {
   // ✅ HOOKS MUST BE INSIDE COMPONENT
@@ -26,6 +28,7 @@ export default function OccyToken() {
   const [token, setToken] = useState(null);
   const liquidity = parseLiquidity(token?.liquidityResponse);
   const { tokenAddress: encryptedAddress } = useParams();
+  const [activeTab, setActiveTab] = useState("buy");
 
 useEffect(() => {
   const loadToken = async () => {
@@ -65,18 +68,21 @@ useEffect(() => {
 
 
 
-  const USDT_BY_CHAIN = {
-    137: import.meta.env.USDT_TOKEN_ADDRESS_POL,     // Polygon
-    80001: import.meta.env.USDT_TOKEN_ADDRESS_POL,  // Polygon testnet (optional)
+const USDT_BY_CHAIN = {
+  // Ethereum
+  1: import.meta.env.VITE_USDT_TOKEN_ADDRESS_ETH,
 
-    1: import.meta.env.USDT_TOKEN_ADDRESS_ETH,      // Ethereum
-    11155111: import.meta.env.USDT_TOKEN_ADDRESS_ETH, // Sepolia
+  // Polygon
+  137: import.meta.env.VITE_USDT_TOKEN_ADDRESS_POL,
 
-    56: import.meta.env.USDT_TOKEN_ADDRESS_BSC,     // BSC
-    97: import.meta.env.USDT_TOKEN_ADDRESS_BSC,     // BSC Testnet
+  // Base
+  8453: import.meta.env.VITE_USDT_TOKEN_ADDRESS_BASE,
 
-    14601: import.meta.env.USDT_TOKEN_ADDRESS_SONIC // Sonic
-  };
+  //Sonic
+  146: import.meta.env.VITE_OCC_TOKEN_ADDRESS,
+};
+  console.log("User's chain ID:", user?.chainId);
+  console.log("USDT_BY_CHAIN:", USDT_BY_CHAIN[user?.chainId]);
   const USDT = user?.chainId ? USDT_BY_CHAIN[user?.chainId] : null;
   const OCCY = token?.tokenAddress;
   
@@ -121,7 +127,12 @@ const handleSwap = async (type) => {
 
     setLoading(true);
     const isBuy = type === "buy";
-
+    console.log("Swapping", {
+      userAddress: address,
+      tokenIn: isBuy ? OCCY : USDT,
+      tokenOut: isBuy ? USDT : OCCY,
+      amountIn: amount,
+    });
 
     const txHash = await swapTokenFrontend({
       userAddress: address,
@@ -163,11 +174,15 @@ const handleSwap = async (type) => {
     );
 
 
-    popupSuccess("Swap Successful 🎉", txHash);
+    popupSuccess("Swap Successful 🎉");
     setAmount("");
   } catch (err) {
-    popupError("Swap Failed", err.message);
-  } finally {
+    console.error("SWAP ERROR:", err);
+
+    const { title, message } = parseBlockchainError(err);
+    popupError(title || "Swap Failed", message);
+  }
+ finally {
     setLoading(false);
   }
 };
@@ -220,7 +235,7 @@ return (
               )}
 
               <div className="w_box mb-4 overflow-hidden">
-                <ul className="nav buy_sell_tab mb-4">
+                {/* <ul className="nav buy_sell_tab mb-4">
                   <li className="nav-item">
                     <button
                       className="nav-link buy active"
@@ -240,7 +255,36 @@ return (
                       {loading ? "Processing..." : "Sell"}
                     </button>
                   </li>
-                </ul>
+                </ul> */}
+                <ul className="nav buy_sell_tab mb-4">
+  <li className="nav-item w-50">
+    <button
+      className={`nav-link buy ${activeTab === "buy" ? "active" : ""}`}
+      disabled={loading}
+      onClick={() => setActiveTab("buy")}
+    >
+      Buy
+    </button>
+  </li>
+
+  <li className="nav-item w-50">
+    <button
+      className={`nav-link sell ${activeTab === "sell" ? "active" : ""}`}
+      disabled={loading}
+      onClick={() => setActiveTab("sell")}
+    >
+      Sell
+    </button>
+  </li>
+</ul>
+
+<button
+  className="btn btn_man w-100"
+  disabled={loading}
+  onClick={() => handleSwap(activeTab)}
+>
+  {loading ? "Processing..." : activeTab === "buy" ? "Buy Now" : "Sell Now"}
+</button>
 
                 <div className="tab-content">
                   <label className="mb-1">Enter Amount</label>

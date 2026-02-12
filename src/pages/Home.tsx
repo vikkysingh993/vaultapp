@@ -13,7 +13,7 @@ export default function Home() {
   useEffect(() => {
     if (user && sessionStorage.getItem("firstTimeLogin")) {
       sessionStorage.removeItem("firstTimeLogin");
-      navigate("/launchpad", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [user, navigate]);
   return (
@@ -143,9 +143,9 @@ export default function Home() {
                 your project's future with an exciting IDO on our cutting-edge
                 crypto launchpad.
               </p>
-              <a href="/apply-ido" className="btn btn_man">
+              {/* <a href="/apply-ido" className="btn btn_man">
                 Apply for IDO
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

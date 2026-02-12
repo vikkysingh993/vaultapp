@@ -169,7 +169,11 @@ useEffect(() => {
           <div className="row">
             {tokens.map((token) => (
               <div className="col-md-4 mb-4" key={token.id}>
-                <div className="coin_box coin_box_big">
+                  <div
+                    className="coin_box coin_box_big"
+                    onClick={() => handleTokenClick(token)}
+                    style={{ cursor: "pointer" }}
+                  >
                   <div className="d-flex mb-2">
                     <div className="coin_box_left">
                       <img

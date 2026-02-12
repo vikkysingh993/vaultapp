@@ -18,9 +18,9 @@ const PLATFORM_FEE_USDT = "10"; // 10 USDT for other chains
 
 const OCC_TOKEN_ADDRESS = "0x307Ad911cF5071be6Aace99Cb2638600212dC657"; // mainnet
 const USDT_TOKEN_ADDRESSES = {
-  ethereum: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-  polygon: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-  base: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  ethereum: process.env.VITE_USDT_TOKEN_ADDRESS_ETH || "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+  polygon: process.env.VITE_USDT_TOKEN_ADDRESS_POL || "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+  base: process.env.VITE_USDT_TOKEN_ADDRESS_BASE || "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
   sonic: null // No USDT fee for Sonic
 };
 
@@ -119,7 +119,7 @@ const payFee = async (signer, chain) => {
   }
   
   // Free if OCC >= 1000 (Sonic only) OR other chains (no OCC check needed)
-  if ((chain === "sonic" && occBalance >= FREE_LIMIT) || chain !== "sonic") {
+  if (occBalance >= FREE_LIMIT) {
     console.log("Free deployment");
     return { feePaid: "0", feeTxHash: "FREE", feeType: "FREE" };
   }
@@ -148,6 +148,7 @@ const payFee = async (signer, chain) => {
   // Other chains = Charge USDT fee
   else {
     const usdtAddress = USDT_TOKEN_ADDRESSES[chain];
+    console.log("USDT address for chain", chain, ":", usdtAddress);
     if (!usdtAddress) {
       throw new Error("USDT address not configured");
     }
@@ -186,8 +187,26 @@ const payFee = async (signer, chain) => {
       }
 
       const provider = new ethers.BrowserProvider(walletProvider);
+
+      // 🔥 CHECK ACCOUNTS FIRST
+      const accounts = await provider.send("eth_accounts", []);
+
+      if (!accounts || accounts.length === 0) {
+        popupWarning("Wallet Not Connected", "Please connect your wallet first");
+        return;
+      }
+
       const signer = await provider.getSigner();
       const userAddress = await signer.getAddress();
+
+      if (!userAddress) {
+        popupWarning("Wallet Not Connected", "Please connect your wallet first");
+        return;
+      }
+
+      // const provider = new ethers.BrowserProvider(walletProvider);
+      // const signer = await provider.getSigner();
+      // const userAddress = await signer.getAddress();
       console.log('Connected wallet:', userAddress);
 
       if (!form.chain) {
@@ -235,7 +254,17 @@ const payFee = async (signer, chain) => {
       formData.append("feeType", feeResult.feeType);
 
       if (form.logo) formData.append("logo", form.logo);
-
+      
+      // formData.append("name", 'SonicToken7');
+      // formData.append("symbol", 'SONIC7');
+      // formData.append("supply", '5');
+      // formData.append("description", 'This is a description for SonicToken7');
+      // formData.append("chain", form.chain);
+      // formData.append("tokenAddress", '0x4265790a5Cf6Efc18d94Ff77Cb9Ac90300c08f59');
+      // formData.append("creatorWallet", '0x4103921D5FEA1cEe55AA00b3aE6103E958dEf91F');
+      // formData.append("feePaid", '0');
+      // formData.append("feeTxHash", 'FREE');
+      // formData.append("feeType", 'FREE');
       const res = await api.post("/token-flow/create-token-flow", formData, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
@@ -244,7 +273,6 @@ const payFee = async (signer, chain) => {
 
       popupSuccess(
         "Token Created 🎉", 
-        `Token Address:\n${tokenAddress}\n\nFee: ${feeResult.feeType}`,
         () => navigate("/occy-token")
       );
 
