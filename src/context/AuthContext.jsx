@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
   // 🔁 Restore from sessionStorage on refresh
   useEffect(() => {
     const storedUser = sessionStorage.getItem("authUser");

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -14,6 +15,17 @@ export default function Footer() {
               Token Launchpad. Get access to exclusive token sales and be a part
               of the revolution.
             </p>
+            <ul className="footer_contact mt-4">
+              <li>
+                <Link to="/about">About Us</Link>
+              </li>
+              <li>
+                <Link to="/contact">Contact Us</Link>
+              </li>
+              <li>
+                <Link to="/privacy-policy">Privacy Policy</Link>
+              </li>
+            </ul>
           </div>
 
           <div className="col-md-5 ps-md-5 left_border">
@@ -22,7 +34,7 @@ export default function Footer() {
               <div className="vertical-social">
                 <ul>
                   <li>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="https://x.com/OccvaultSupport">
                       <i className="bi bi-twitter-x"></i>
                     </a>
                   </li>

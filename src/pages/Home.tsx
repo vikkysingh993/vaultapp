@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { encryptAddress } from "../utils/crypto";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
+import api from "../config/axios";
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [page, setPage] = useState(null);
+  const [tokens, setTokens] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
+  const [faqs, setFaqs] = useState([]);
+
 
   // ✅ First time login? Auto redirect to launchpad
   useEffect(() => {
@@ -16,6 +24,75 @@ export default function Home() {
       navigate("/", { replace: true });
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    console.log("🔥 useEffect fired, slug = about");
+  
+    api.get(`/pages/about`)
+      .then(res => {
+        console.log("✅ API success", res.data);
+        setPage(res.data?.data || res.data);
+      })
+      .catch(err => {
+        console.error("❌ API error", err);
+        setPage(false);
+      });
+  },[]);
+
+  const fetchTokens = async (type = "6") => {
+  try {
+    setLoading(true);
+
+    const res = await api.get(`/launchpad/tokens?type=${type}`);
+
+    if (res.data.success) {
+      setTokens(res.data.data);
+    }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setLoading(false); // 🔥 THIS WAS MISSING
+  }
+};
+
+const fetchFaqs = async () => {
+  try {
+    const res = await api.get(`/faqs`);
+
+    if (res.data.success) {
+      setFaqs(res.data.data);
+    }
+  } catch (e) {
+    console.error(e); 
+  }
+}
+
+const fetchMarketCapPrice = async (token) => {
+  try {
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${token.chain}&include_market_cap=true`)
+  .then(res => res.json())
+  .then(data => {
+    console.log("Price:", data.bitcoin.usd);
+    console.log("Market Cap:", data.bitcoin.usd_market_cap);
+  });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+useEffect(() => {
+  fetchTokens();
+  fetchFaqs();
+}, []);
+
+const handleTokenClick = (token) => {
+  const encrypted = encryptAddress(token.tokenAddress);
+
+  // session backup
+  sessionStorage.setItem("latestToken", JSON.stringify(token));
+
+  navigate(`/occy-token/${encrypted}`);
+};
   return (
     <>
       <Navbar />
@@ -24,38 +101,46 @@ export default function Home() {
       {/* ===== Now Coin Section ===== */}
       <section className="launch p80 bg_color" id="about-us3">
         <div className="container">
-          <h2 className="tc hadding text-center mb-4">Now Coin</h2>
+          <h2 className="tc hadding text-center mb-4">New Coins</h2>
           <div className="row align-items-center">
-            {[1, 2, 3, 4, 5, 6].map((_, i) => (
+            {tokens.map((token, i) => (
               <div className="col-md-4 mb-3" key={i}>
-                <a href="/coin" className="coin_box">
+                <div className="coin_box" onClick={() => handleTokenClick(token)}  style={{ cursor: "pointer" }}>
                   <div className="d-flex mb-3">
                     <div className="text-center coin_box_left">
                       <img
                         className="img-fluid"
-                        src="/img/about.png"
+                        src={token.logo ? import.meta.env.VITE_API_IMG_URL + token.logo : "/img/about.png"}
                         alt="about"
                       />
                     </div>
                     <div>
-                      <h3>Occy Token (OCCY)</h3>
+                      <h3>{token?.name} ({token?.symbol})</h3>
                       <div className="color1">
                         <span className="font-medium text-green-300">
                           market cap: $
                         </span>
-                        2.3M
+                        2.3M{/* token market cap value */}
                       </div>
                       <div>
-                        <span className="text-[#9DA3AE]">replies: 314</span>
+                        <span className="text-[#9DA3AE]">18 {/* token decimal value */}</span>
                       </div>
                     </div>
                   </div>
                   <p className="mb-0">
                     New South Park Episode Takes Aim at Memecoins
                   </p>
-                </a>
+                </div>
               </div>
             ))}
+            <div className="col-md-5"></div>
+            <div className="col-md-6 mb-4">
+              <Link to="/launchpad" className="btn btn_man me-3">
+              View More
+              </Link>
+            <div>
+            </div>
+            </div>
           </div>
         </div>
       </section>
@@ -159,22 +244,10 @@ export default function Home() {
               <img src="/img/about.png" alt="about" className="img-fluid" />
             </div>
             <div className="col-md-6 order-md-1 taj">
-              <h2 className="hadding">About Us</h2>
-              <p>
-                At our Occy Token launchpad, we have built a vibrant ecosystem
-                that not only launches the projects but also helps incubate them
-                at every stage. With a passionate team of experts, we are
-                dedicated to fostering the next generation of innovators and
-                revolutionaries. From ideation to launches, we offer
-                unparalleled support, guiding projects through every step of
-                their journey, backed by state-of-the-art technology and
-                strategic partnerships. By choosing our launchpad, you gain
-                access to a global community of investors, influencers, and
-                enthusiasts eager to witness the greatness unfold. Embrace the
-                future of Web 3.0 and soar to unparalleled heights with us.
-                <br />
-                Your destiny awaits!
-              </p>
+              <h2 className="hadding">{page?.title || "About Us"}</h2>
+            
+                {page?.content }
+            
             </div>
           </div>
         </div>
@@ -213,7 +286,33 @@ export default function Home() {
           <div className="row">
             <div className="col-lg-10 m-auto">
               <div className="accordion" id="accordionEx">
-                {[
+                {faqs.length > 0 && faqs.map((faq, i) => (
+                  <div className="accordion-item" key={i}>
+                    <h2 className="accordion-header" id={`heading${i}`}>
+                      <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#collapse${i}`}
+                        aria-expanded="false"
+                        aria-controls={`collapse${i}`}
+                      >
+                        {faq.question}
+                      </button>
+                    </h2>
+                    <div
+                      id={`collapse${i}`}
+                      className="accordion-collapse collapse"
+                      data-bs-parent="#accordionEx"
+                    >
+                      <div className="accordion-body">{faq.answer}</div>
+                    </div>
+                  </div>
+                ))}
+                {faqs.length === 0 && (
+                  <p className="text-center">No FAQs available.</p>
+                )}
+                {/* {[
                   {
                     q: "What is Occy Token?",
                     a: "Occy Token is a cutting-edge crypto Launchpad and Incubator designed to empower blockchain projects and investors.",
@@ -269,6 +368,7 @@ export default function Home() {
                     </div>
                   </div>
                 ))}
+                  */}
               </div>
             </div>
           </div>

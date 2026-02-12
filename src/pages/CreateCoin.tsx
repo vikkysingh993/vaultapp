@@ -273,6 +273,7 @@ const payFee = async (signer, chain) => {
 
       popupSuccess(
         "Token Created 🎉", 
+        "",
         () => navigate("/occy-token")
       );
 
