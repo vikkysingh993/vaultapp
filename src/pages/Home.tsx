@@ -245,8 +245,9 @@ const handleTokenClick = (token) => {
             </div>
             <div className="col-md-6 order-md-1 taj">
               <h2 className="hadding">{page?.title || "About Us"}</h2>
-            
-                {page?.content }
+             <div
+                dangerouslySetInnerHTML={{ __html: page?.content }}
+              />
             
             </div>
           </div>
