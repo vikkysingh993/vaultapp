@@ -257,9 +257,9 @@ return (
                   </li>
                 </ul> */}
                 <ul className="nav buy_sell_tab mb-4">
-  <li className="nav-item w-50">
+  <li className={`nav-item w-50 buy_btn ${activeTab === "buy" ? "active" : ""}`}>
     <button
-      className={`nav-link buy ${activeTab === "buy" ? "active" : ""}`}
+      className="nav-link"
       disabled={loading}
       onClick={() => setActiveTab("buy")}
     >
@@ -267,9 +267,9 @@ return (
     </button>
   </li>
 
-  <li className="nav-item w-50">
+  <li className={`nav-item w-50 sell_btn ${activeTab === "sell" ? "active" : ""}`}>
     <button
-      className={`nav-link sell ${activeTab === "sell" ? "active" : ""}`}
+      className="nav-link"
       disabled={loading}
       onClick={() => setActiveTab("sell")}
     >

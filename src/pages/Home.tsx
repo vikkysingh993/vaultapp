@@ -86,6 +86,8 @@ useEffect(() => {
 }, []);
 
 const handleTokenClick = (token) => {
+  if (token?.dummy) return;
+
   const encrypted = encryptAddress(token.tokenAddress);
 
   // session backup
@@ -93,6 +95,16 @@ const handleTokenClick = (token) => {
 
   navigate(`/occy-token/${encrypted}`);
 };
+
+const displayedTokens = React.useMemo(() => {
+  if (tokens.length >= 6) return tokens;
+  const placeholders = Array.from({ length: 6 - tokens.length }, (_, index) => ({
+    dummy: true,
+    id: `dummy-${index}`,
+  }));
+  return [...tokens, ...placeholders];
+}, [tokens]);
+
   return (
     <>
       <Navbar />
@@ -103,9 +115,13 @@ const handleTokenClick = (token) => {
         <div className="container">
           <h2 className="tc hadding text-center mb-4">New Coins</h2>
           <div className="row align-items-center">
-            {tokens.map((token, i) => (
-              <div className="col-md-4 mb-3" key={i}>
-                <div className="coin_box" onClick={() => handleTokenClick(token)}  style={{ cursor: "pointer" }}>
+            {displayedTokens.map((token, i) => (
+              <div className="col-md-4 mb-3" key={token.id || i}>
+                <div
+                  className="coin_box"
+                  onClick={() => handleTokenClick(token)}
+                  style={{ cursor: token?.dummy ? "default" : "pointer" }}
+                >
                   <div className="d-flex mb-3">
                     <div className="text-center coin_box_left">
                       <img
@@ -115,20 +131,26 @@ const handleTokenClick = (token) => {
                       />
                     </div>
                     <div>
-                      <h3>{token?.name} ({token?.symbol})</h3>
+                      <h3>
+                        {token?.dummy ? "Coming Soon" : `${token?.name} (${token?.symbol})`}
+                      </h3>
                       <div className="color1">
                         <span className="font-medium text-green-300">
                           market cap: $
                         </span>
-                        2.3M{/* token market cap value */}
+                        {token?.dummy ? "0.0" : "2.3M"}
                       </div>
                       <div>
-                        <span className="text-[#9DA3AE]">18 {/* token decimal value */}</span>
+                        <span className="text-[#9DA3AE]">
+                          {token?.dummy ? "---" : "18"}
+                        </span>
                       </div>
                     </div>
                   </div>
                   <p className="mb-0">
-                    New South Park Episode Takes Aim at Memecoins
+                    {token?.dummy
+                      ? "More tokens will appear here soon."
+                      : "New South Park Episode Takes Aim at Memecoins"}
                   </p>
                 </div>
               </div>

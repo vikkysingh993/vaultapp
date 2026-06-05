@@ -14,6 +14,7 @@ const Launchpad = () => {
 const [tokens, setTokens] = useState([]);
 const [loading, setLoading] = useState(true);
 const [activeTab, setActiveTab] = useState("all");
+const [searchQuery, setSearchQuery] = useState("");
 const navigate = useNavigate();
 useEffect(() => {
   fetchTokens();
@@ -28,11 +29,17 @@ const handleTokenClick = (token) => {
   navigate(`/occy-token/${encrypted}`);
 };
 
-const fetchTokens = async (type = "all") => {
+const handleSearch = (event) => {
+  event.preventDefault();
+  fetchTokens(activeTab, searchQuery.trim());
+};
+
+const fetchTokens = async (type = "all", query = "") => {
   try {
     setLoading(true);
 
-    const res = await api.get(`/launchpad/tokens?type=${type}`);
+    const queryString = query ? `&search=${encodeURIComponent(query)}` : "";
+    const res = await api.get(`/launchpad/tokens?type=${type}${queryString}`);
 
     if (res.data.success) {
       setTokens(res.data.data);
@@ -80,7 +87,7 @@ useEffect(() => {
         <div className="container">
           <div className="row mb-3">
             <div className="col-md-5 m-auto">
-              <form className="d-flex w100 items-center gap-2">
+              <form className="d-flex w100 items-center gap-2" onSubmit={handleSearch}>
                 <div className="position-relative w100">
                   <i className="bi bi-search search_icon"></i>
                   <input
@@ -88,6 +95,8 @@ useEffect(() => {
                     placeholder="Search..."
                     type="text"
                     name="search-token"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
                 <button className="btn btn_man min-w105" type="submit">

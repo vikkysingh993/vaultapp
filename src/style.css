@@ -296,9 +296,120 @@ ul.list-items li {
 
 .copyright{  border-top: 1px solid #203052;padding: 15px 0;    margin-top: 60px;}
 .light_bg{background: #fafafa;}
-.footer {  background-color: #0e1628;    padding: 75px 0 0;}
-.footer p{    color: #c3c3c3;}
-.footer .heading-primary{ color:#fff;}
+.footer {
+  background-color: #0e1628;
+  padding: 75px 0 30px;
+  color: #c3c3c3;
+}
+.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.footer .footer-top {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.footer-brand {
+  flex: 1 1 320px;
+  min-width: 260px;
+}
+.footer-brand img {
+  max-width: 170px;
+  margin-bottom: 18px;
+  display: block;
+}
+.footer-brand p {
+  max-width: 420px;
+  line-height: 1.8;
+  color: #c3c3c3;
+}
+.footer-links,
+.footer-social {
+  flex: 0 1 220px;
+  min-width: 200px;
+}
+.footer-links h5,
+.footer-social h5 {
+  color: #ffffff;
+  margin-bottom: 18px;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.footer-links a,
+.footer-bottom a {
+  display: block;
+  color: #c3c3c3;
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: color 0.2s ease;
+}
+.footer-links a:hover,
+.footer-bottom a:hover {
+  color: #ffffff;
+}
+.footer-social .social-icons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-social .social-icons a {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+.footer-social .social-icons a:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.24);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 55px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 25px;
+  flex-wrap: wrap;
+}
+.footer-bottom span {
+  color: #7e8aa3;
+  font-size: 0.95rem;
+}
+.footer-bottom div {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-bottom a {
+  color: #c3c3c3;
+  font-size: 0.95rem;
+}
+@media (max-width: 860px) {
+  .footer .footer-top {
+    flex-direction: column;
+  }
+  .footer-links,
+  .footer-social,
+  .footer-brand {
+    min-width: 100%;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 
 .vertical-social ul li {display: inline-block; padding: 0;}
 .vertical-social ul li a {

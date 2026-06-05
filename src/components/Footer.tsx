@@ -3,75 +3,50 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="footer" id="contact">
-      <div className="container">
-        <div className="row align-items-start">
-          <div className="col-md-6 pr-md-5">
-            <div className="navbar-brand mb-3">
-              <img src="/img/logo.png" alt="Launchpad" className="logo" />
-            </div>
-            <p>
-              Discover the future of crypto projects with our cutting-edge Occy
-              Token Launchpad. Get access to exclusive token sales and be a part
-              of the revolution.
-            </p>
-            <ul className="footer_contact mt-4">
-              <li>
-                <Link to="/about">About Us</Link>
-              </li>
-              <li>
-                <Link to="/contact">Contact Us</Link>
-              </li>
-              <li>
-                <Link to="/privacy-policy">Privacy Policy</Link>
-              </li>
-            </ul>
-          </div>
+<footer className="footer" id="contact">
+  <div className="container">
 
-          <div className="col-md-5 ps-md-5 left_border">
-            <div className="nav_link mt-3">
-              <h4>Follow Us On</h4>
-              <div className="vertical-social">
-                <ul>
-                  <li>
-                    <a target="_blank" href="https://x.com/OccvaultSupport">
-                      <i className="bi bi-twitter-x"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a target="_blank" href="#">
-                      <i className="bi bi-telegram"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a target="_blank" href="#">
-                      <i className="bi bi-youtube"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a target="_blank" href="#">
-                      <i className="bi bi-medium"></i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="footer-top">
 
-        <div className="copyright">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-6 order-sm-2 text-sm-end">
-                <a href="#">Terms of Services</a>
-              </div>
-              <div className="col-md-6 order-sm-1">
-                © 2025 Occy Token. All Rights Reserved
-              </div>
-            </div>
-          </div>
+      <div className="footer-brand">
+        <img src="/img/logo.png" alt="Launchpad" />
+        <p>
+          Discover the future of crypto projects with our cutting-edge
+          Occy Token Launchpad.
+        </p>
+      </div>
+
+      <div className="footer-links">
+        <h5>Quick Links</h5>
+
+        <Link to="/about">About Us</Link>
+        <Link to="/contact">Contact Us</Link>
+        <Link to="/privacy-policy">Privacy Policy</Link>
+      </div>
+
+      <div className="footer-social">
+        <h5>Community</h5>
+
+        <div className="social-icons">
+          <a href="#"><i className="bi bi-twitter-x"></i></a>
+          <a href="#"><i className="bi bi-telegram"></i></a>
+          <a href="#"><i className="bi bi-youtube"></i></a>
+          <a href="#"><i className="bi bi-medium"></i></a>
         </div>
       </div>
-    </footer>
+
+    </div>
+
+    <div className="footer-bottom">
+      <span>© 2025 Occy Token. All Rights Reserved</span>
+
+      <div>
+        <Link to="/terms">Terms</Link>
+        <Link to="/privacy-policy">Privacy</Link>
+      </div>
+    </div>
+
+  </div>
+</footer>
   );
 }

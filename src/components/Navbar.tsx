@@ -8,7 +8,7 @@ export default function Navbar() {
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
           <img src="/img/logo.png" alt="Occy Token" className="logo" />
-          <span>Occy Token</span>
+          <span className="sub-txt">Occy Token</span>
         </Link>
 
         <div id="box1" className="box2"><span></span></div>
