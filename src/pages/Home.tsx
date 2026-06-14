@@ -15,6 +15,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const [faqs, setFaqs] = useState([]);
+  const shortContent =
+  page?.content?.replace(/<[^>]+>/g, "").slice(0, 1000) || "";
 
 
   // ✅ First time login? Auto redirect to launchpad
@@ -268,9 +270,11 @@ const displayedTokens = React.useMemo(() => {
             <div className="col-md-6 order-md-1 taj">
               <h2 className="hadding">{page?.title || "About Us"}</h2>
              <div
-                dangerouslySetInnerHTML={{ __html: page?.content }}
-              />
-            
+                dangerouslySetInnerHTML={{ __html: shortContent }}
+              />            
+            <Link to="/about" className="btn btn_man mt-3">
+          View More
+        </Link>
             </div>
           </div>
         </div>
