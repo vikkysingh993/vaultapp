@@ -398,6 +398,12 @@ const payFee = async (signer, chain) => {
                         className="form-control"
                         name="supply"
                         type="number"
+                        min="1"
+                        onKeyDown={(e) => {
+                          if (e.key === "-" || e.key === "e") {
+                            e.preventDefault();
+                          }
+                        }}  
                         value={form.supply}
                         onChange={handleChange}
                         placeholder="Enter Supply"
