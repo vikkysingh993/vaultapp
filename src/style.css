@@ -1383,8 +1383,37 @@ body .css-1dimb5e-singleValue{color:#fff;}
 .buy_sell_tab li a{    width: 100%;    border-radius: 8px; color: #fff;    text-align: center;}
 .buy_sell_tab li .buy.active{ background-color: #1fd978; color: #fff; }
 .buy_sell_tab li .sell.active{ background-color: #ef4444; color: #fff; }
-.buy_btn{background-color: #1fd978; color: #fff; }
-.sell_btn{background-color: #ef4444; color: #fff; }
+.buy_btn{
+    background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important;
+    color: #000;
+    width: 100%;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.buy_btn:hover{
+    background: #fff !important;
+    color: #FF8800;
+    border: 1px solid #FF8800;
+}
+
+.sell_btn{
+    background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important;
+    color: #000;
+    width: 100%;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.sell_btn:hover{
+    background: #fff !important;
+    color: #FF8800;
+    border: 1px solid #FF8800;
+}
 .form-control option{ background: #2d292a;}
 .navbar-toggler{ color: #fff;}
 

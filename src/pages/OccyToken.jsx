@@ -129,15 +129,17 @@ const handleSwap = async (type) => {
     const isBuy = type === "buy";
     console.log("Swapping", {
       userAddress: address,
-      tokenIn: isBuy ? OCCY : USDT,
-      tokenOut: isBuy ? USDT : OCCY,
+      // when buying, user sends USDT -> receives OCCY
+      tokenIn: isBuy ? USDT : OCCY,
+      tokenOut: isBuy ? OCCY : USDT,
       amountIn: amount,
     });
 
     const txHash = await swapTokenFrontend({
       userAddress: address,
-      tokenIn: isBuy ? OCCY : USDT,
-      tokenOut: isBuy ? USDT : OCCY,
+      // tokenIn should be the token user is spending
+      tokenIn: isBuy ? USDT : OCCY,
+      tokenOut: isBuy ? OCCY : USDT,
       amountIn: amount,
     });
      const raw = sessionStorage.getItem("authUser");
@@ -147,8 +149,9 @@ const handleSwap = async (type) => {
     const formData = new FormData();
       formData.append("walletAddress", address);
       formData.append("swapType", type.toUpperCase());
-      formData.append("tokenIn", type === "buy" ? OCCY : USDT);
-      formData.append("tokenOut", type === "sell" ? USDT : OCCY);
+      // tokenIn is what the user spent
+      formData.append("tokenIn", type === "buy" ? USDT : OCCY);
+      formData.append("tokenOut", type === "buy" ? OCCY : USDT);
       formData.append("amountIn", amount);
       formData.append("txHash", txHash);
       formData.append("chainId", user?.chainId);
@@ -158,8 +161,8 @@ const handleSwap = async (type) => {
       {
         walletAddress: address,
         swapType: type.toUpperCase(),
-        tokenIn: type === "buy" ? OCCY : USDT,
-        tokenOut: type === "sell" ? USDT : OCCY,
+        tokenIn: type === "buy" ? USDT : OCCY,
+        tokenOut: type === "buy" ? OCCY : USDT,
         amountIn: amount,
         txHash: txHash,
         chainId: user?.chainId,
@@ -259,7 +262,7 @@ return (
                 <ul className="nav buy_sell_tab mb-4">
   <li className={`nav-item w-50 buy_btn ${activeTab === "buy" ? "active" : ""}`}>
     <button
-      className="nav-link"
+      className="nav-link buy_btn"
       disabled={loading}
       onClick={() => setActiveTab("buy")}
     >
@@ -269,7 +272,7 @@ return (
 
   <li className={`nav-item w-50 sell_btn ${activeTab === "sell" ? "active" : ""}`}>
     <button
-      className="nav-link"
+      className="nav-link sell_btn"
       disabled={loading}
       onClick={() => setActiveTab("sell")}
     >

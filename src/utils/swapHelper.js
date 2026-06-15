@@ -52,6 +52,7 @@ console.log("ROUTER:", ROUTER_ADDRESS);
     userAddress,
     deadline
   );
+  console.log("Swap transaction sent:", tx.hash);
 
   const receipt = await tx.wait();
   return receipt.hash;
