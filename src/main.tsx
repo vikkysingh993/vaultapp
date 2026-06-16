@@ -9,7 +9,7 @@ import "./style.css";
 import "./appkit-init.js";
 import ScrollToTop from "./ScrollToTop";
 
-🔒 Disable right click & devtools
+// 🔒 Disable right click & devtools
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 document.addEventListener("keydown", (e) => {
@@ -22,7 +22,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// 🔇 Disable console in production
+// // 🔇 Disable console in production
 if (import.meta.env.PROD) {
   console.log = () => {};
   console.warn = () => {};
