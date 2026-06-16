@@ -59,6 +59,7 @@ export default function CreateCoin() {
     logo: null,
   });
   const [deploying, setDeploying] = useState(false);
+  const [deployStep, setDeployStep] = useState("Preparing deployment");
   const [occBalance, setOccBalance] = useState(null);
 
   // ================= HELPERS =================
@@ -179,6 +180,7 @@ const payFee = async (signer, chain) => {
   const deployToken = async () => {
     try {
       setDeploying(true);
+      setDeployStep("Checking wallet connection");
       const walletProvider = getWalletProvider();
       
       if (!walletProvider) {
@@ -215,13 +217,16 @@ const payFee = async (signer, chain) => {
       }
 
       // Network switch
+      setDeployStep(`Switching to ${CHAINS[form.chain]?.name || "selected network"}`);
       await ensureCorrectNetwork(form.chain);
 
       // Pay fee based on chain and OCC balance
+      setDeployStep("Confirming platform fee");
       const feeResult = await payFee(signer, form.chain);
       console.log('Fee result:', feeResult);
 
       // Deploy token
+      setDeployStep("Deploying token contract");
       const factory = new ethers.ContractFactory(
         tokenArtifact.abi,
         tokenArtifact.bytecode,
@@ -241,6 +246,7 @@ const payFee = async (signer, chain) => {
       const tokenAddress = await contract.getAddress();
 
       // Backend API call
+      setDeployStep("Saving coin details");
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("symbol", form.symbol);
@@ -272,13 +278,13 @@ const payFee = async (signer, chain) => {
       });
 
       popupSuccess(
-        "Token Created 🎉", 
+        "Token Created", 
         "",
         () => navigate("/occy-token")
       );
 
     } catch (err) {
-      console.error('🚨 FULL ERROR OBJECT:', err);
+      console.error('FULL ERROR OBJECT:', err);
       
       // 🔥 DETAILED ERROR HANDLING FOR ALL CASES
       let errorTitle = "Error";
@@ -343,6 +349,7 @@ const payFee = async (signer, chain) => {
       
     } finally {
       setDeploying(false);
+      setDeployStep("Preparing deployment");
     }
   };
 
@@ -350,6 +357,23 @@ const payFee = async (signer, chain) => {
   return (
     <>
       <Navbar />
+
+      {deploying && (
+        <div className="coin-deploy-loader" role="status" aria-live="polite">
+          <div className="coin-deploy-loader__panel">
+            <div className="coin-deploy-loader__coin">
+              <i className="bi bi-coin"></i>
+            </div>
+            <span className="coin-deploy-loader__eyebrow">Create New Coin</span>
+            <h3>Launching your token</h3>
+            <p>{deployStep}</p>
+            <div className="coin-deploy-loader__bar" aria-hidden="true">
+              <span></span>
+            </div>
+            <small>Please keep this window open and approve wallet prompts.</small>
+          </div>
+        </div>
+      )}
 
       <section className="in_page">
         <div className="container">
