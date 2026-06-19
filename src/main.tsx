@@ -10,24 +10,24 @@ import "./appkit-init.js";
 import ScrollToTop from "./ScrollToTop";
 
 // 🔒 Disable right click & devtools
-document.addEventListener("contextmenu", (e) => e.preventDefault());
+// document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-document.addEventListener("keydown", (e) => {
-  if (
-    e.key === "F12" ||
-    (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
-    (e.ctrlKey && e.key === "U")
-  ) {
-    e.preventDefault();
-  }
-});
+// document.addEventListener("keydown", (e) => {
+//   if (
+//     e.key === "F12" ||
+//     (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+//     (e.ctrlKey && e.key === "U")
+//   ) {
+//     e.preventDefault();
+//   }
+// });
 
-// // 🔇 Disable console in production
-if (import.meta.env.PROD) {
-  console.log = () => {};
-  console.warn = () => {};
-  console.error = () => {};
-}
+// // // 🔇 Disable console in production
+// if (import.meta.env.PROD) {
+//   console.log = () => {};
+//   console.warn = () => {};
+//   console.error = () => {};
+// }
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
