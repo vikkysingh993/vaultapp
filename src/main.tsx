@@ -30,6 +30,7 @@ import ScrollToTop from "./ScrollToTop";
 // }
 
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ScrollToTop />
