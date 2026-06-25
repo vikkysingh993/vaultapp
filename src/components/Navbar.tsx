@@ -28,6 +28,7 @@ export default function Navbar() {
             {/* <li className="nav-item"><Link className="nav-link" to="/staking-farming">Stake/Farm</Link></li> */}
             <li className="nav-item"><Link className="nav-link" to="/how-to-start">How to Start</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/contact">Contact Us</Link></li>
+            <li className="nav-item"><a className="nav-link" href="/#about-us4">Partners</a></li>
             <li className="nav-item"> <Link to="/create-coin" className="btn btn_man ms-md-3">Create Coin</Link></li>
            
           </ul>

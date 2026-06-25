@@ -17,7 +17,10 @@ export default function Header(): JSX.Element {
             </span>
           </h1>
 
-          <h4 className="mb-4">Building Tomorrow’s Innovation Today.</h4>
+          <h4 className="mb-4">Fair Token Launches on Sonic, Base, Polygon & Ethereum
+            Launch your token or meme coin with full transparency and zero pre-sales.
+            Powered by OCCY on Sonic Labs — launch tokens seamlessly across Base, Polygon, and
+            Ethereum.</h4>
 
           <div className="login_btns ">
             <Link to="/create-coin" className="btn btn_man me-3">

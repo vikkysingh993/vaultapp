@@ -177,9 +177,9 @@ const displayedTokens = React.useMemo(() => {
               <div className="col-md-9 m-auto text-center">
                 <h2 className="hadding mb-3">Occy Token Ecosystem</h2>
                 <p>
-                  Welcome to Occy Token, where we connect users to Top-Notch
-                  Projects and introduce <br />
-                  Projects to Global Investors effortlessly.
+                  Welcome to the OCC Launchpad, <br />
+                    where builders launch innovative projects and a global
+                    community can discover and participate in them — effortlessly.  
                 </p>
               </div>
             </div>
@@ -189,32 +189,32 @@ const displayedTokens = React.useMemo(() => {
                 {
                   img: "launchpad.png",
                   title: "Launchpad",
-                  desc: "Experience the future of crypto with Our Launchpad, where groundbreaking projects take flight to revolutionize the world of Blockchain.",
+                  desc: "Experience the future of crypto with our fair-launch platform. Groundbreaking projects take flight on Sonic, Base, Polygon, and Ethereum.",
                 },
                 {
                   img: "incubator.png",
                   title: "Incubator",
-                  desc: "We Fuel the growth of cutting-edge crypto startups in our Incubator, nurturing innovation and propelling them towards boundless success.",
+                  desc: "We fuel the growth of cutting-edge crypto startups, nurturing innovation and propelling them toward long-term success.",
                 },
                 {
                   img: "multichain_ido.webp",
                   title: "Multichain IDOs",
-                  desc: "Amplify your crypto potential with Multichain IDOs where innovation has no boundaries and we welcome diverse blockchains to thrive.",
+                  desc: "Amplify your potential with multichain Initial DEX Offerings (IDOs). Innovation has no boundaries across supported chains.",
                 },
                 {
                   img: "nextgen_projects.webp",
                   title: "NextGen Projects",
-                  desc: "Step into the world of tomorrow's crypto advancements through our NextGen projects, where visionary concepts lead to WEB 3.0 evolution.",
+                  desc: "Step into tomorrow’s crypto advancements through visionary Web3 projects on our platform.",
                 },
                 {
                   img: "partnerships.png",
                   title: "Partnerships",
-                  desc: "Beyond launching groundbreaking projects, we empower their journey with unparalleled support through strategic partnerships with CEXs, Media Partners, and Brand Ambassadors.",
+                  desc: "We empower projects with strategic partnerships including CEXs, media outlets, and brand ambassadors.Beyond launching groundbreaking projects, we empower their journey with unparalleled support through strategic partnerships with CEXs, Media Partners, and Brand Ambassadors.",
                 },
                 {
                   img: "marketing.png",
                   title: "Marketing",
-                  desc: "Boost your crypto project's success with our Marketing Experts, where our advanced promotion strategies fuel growth and yield amazing results.",
+                  desc: "Boost your project’s visibility and growth with professional promotion strategies, media partnerships, and community-building support.",
                 },
               ].map((x) => (
                 <div className="col-md-4 col-sm-6 mb-4" key={x.title}>
@@ -248,9 +248,7 @@ const displayedTokens = React.useMemo(() => {
                 Launch <br /> On Occy Token
               </h2>
               <p className="mb-4">
-                Unleash your project's potential, seize the spotlight and secure
-                your project's future with an exciting IDO on our cutting-edge
-                crypto launchpad.
+                Unleash your project’s potential, seize the spotlight, and secure its future with a fair launch on our cutting-edge platform.Creators also earn ongoing royalties from secondary trading as their token grows.
               </p>
               {/* <a href="/apply-ido" className="btn btn_man">
                 Apply for IDO

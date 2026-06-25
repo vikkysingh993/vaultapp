@@ -54,9 +54,15 @@ export default function CreateCoin() {
     name: "",
     symbol: "",
     supply: "",
+    tagline: "",
+    projectCategory: "",
     description: "",
     chain: "",
     logo: null,
+    website: "",
+    twitter: "",
+    telegram: "",
+    discord: "",
   });
   const [deploying, setDeploying] = useState(false);
   const [deployStep, setDeployStep] = useState("Preparing deployment");
@@ -252,13 +258,18 @@ const payFee = async (signer, chain) => {
       formData.append("symbol", form.symbol);
       formData.append("supply", form.supply);
       formData.append("description", form.description);
+      formData.append("tagline", form.tagline);
+      formData.append("projectCategory", form.projectCategory);
       formData.append("chain", form.chain);
       formData.append("tokenAddress", tokenAddress);
       formData.append("creatorWallet", userAddress);
       formData.append("feePaid", feeResult.feePaid);
       formData.append("feeTxHash", feeResult.feeTxHash);
       formData.append("feeType", feeResult.feeType);
-
+      formData.append("website", form.website);
+      formData.append("twitter", form.twitter);
+      formData.append("telegram", form.telegram);
+      formData.append("discord", form.discord);
       if (form.logo) formData.append("logo", form.logo);
       
       // formData.append("name", 'SonicToken7');
@@ -451,7 +462,42 @@ const payFee = async (signer, chain) => {
                         <option value="sonic">Sonic Mainnet</option>
                       </select>
                     </div>
-                  </div>
+                  
+                    <div className="form-group mb-3 col-md-6">
+                        <label>Tagline</label>
+                        <input
+                          className="form-control"
+                          name="tagline"
+                          value={form.tagline}
+                          onChange={handleChange}
+                          placeholder="Enter Tagline"
+                          required
+                          minLength={100}
+                          maxLength={200}
+                        />
+                      </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <label>Project Category</label>
+                        <select
+                          className="form-control"
+                          name="projectCategory"
+                          value={form.projectCategory}
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Select Category</option>
+                          <option value="meme">Meme Coin</option> 
+                          <option value="community">Community</option> 
+                          <option value="defi">DeFi</option> 
+                          <option value="utility">Utility</option> 
+                          <option value="gaming">Gaming/NFT</option>
+                          <option value="ai">AI & Technology</option>
+                          <option value="rwa">Real World Assets(RWA)</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
                   <div className="form-group mb-3 col-md-12">
                     <label>
                       Token Description
@@ -509,6 +555,52 @@ const payFee = async (signer, chain) => {
                       />
                     </div>
                   )}
+                  <div className="row mt-4">
+                    <div className="form-group mb-3 col-md-6">
+                      <label>Website</label>
+                      <input
+                        className="form-control"
+                        type="url"
+                        name="website"
+                        value={form.website}
+                        onChange={handleChange}
+                        placeholder="https://example.com"
+                      />
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                      <label>Twitter</label>
+                      <input
+                        className="form-control"
+                        type="url"
+                        name="twitter"
+                        value={form.twitter}
+                        onChange={handleChange}
+                        placeholder="https://twitter.com/username"
+                      />
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                      <label>Telegram</label>
+                      <input
+                        className="form-control"
+                        type="url"
+                        name="telegram"
+                        value={form.telegram}
+                        onChange={handleChange}
+                        placeholder="https://t.me/username"
+                      />
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                      <label>Discord</label>
+                      <input
+                        className="form-control"
+                        type="url"
+                        name="discord"
+                        value={form.discord}
+                        onChange={handleChange}
+                        placeholder="https://discord.com/invite/username"
+                      />
+                    </div>
+                  </div>
 
                   <button className="btn btn_man w100" disabled={deploying}>
                     {deploying ? "Processing..." : "Submit"}

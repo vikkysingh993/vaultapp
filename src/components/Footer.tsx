@@ -16,11 +16,12 @@ export default function Footer() {
         </p>
       </div>
 
+
       <div className="footer-links">
         <h5>Quick Links</h5>
-
         <Link to="/about">About Us</Link>
-        <Link to="/contact">Contact Us</Link>
+        <Link to="/how-to-start">How to Start</Link>
+        <Link to="/faq">Faq</Link>
         <Link to="/privacy-policy">Privacy Policy</Link>
       </div>
 
@@ -28,10 +29,18 @@ export default function Footer() {
         <h5>Community</h5>
 
         <div className="social-icons">
-          <a href="#"><i className="bi bi-twitter-x"></i></a>
-          <a href="#"><i className="bi bi-telegram"></i></a>
-          <a href="#"><i className="bi bi-youtube"></i></a>
-          <a href="#"><i className="bi bi-medium"></i></a>
+          <a href="https://twitter.com/OpenClearCap" target="_blank" rel="noopener noreferrer">
+            <i className="bi bi-twitter-x"></i>
+          </a>
+          <a href="https://t.me/occvault" target="_blank" rel="noopener noreferrer">
+            <i className="bi bi-telegram"></i>
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer">
+            <i className="bi bi-youtube"></i>
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer">
+            <i className="bi bi-medium"></i>
+          </a>
         </div>
       </div>
 

@@ -217,6 +217,20 @@ useEffect(() => {
 
         </div>
       </section>
+      <section className="static-page">
+        <div className="container page-body">
+          <div className="page-card">
+            <div className="page-content">
+              <h3>Why Launch on OCC Launchpad?</h3>
+              <p>Free Launches — Hold 1,000 or more OCCY tokens and launch for free.
+Creator Royalties — Earn ongoing royalties from secondary trading of your token.
+Multi-Chain Support — Launch on Sonic Labs, Base, Polygon, or Ethereum.
+Fair & Transparent — Anti-snipe protection with automatic liquidity locking.</p>
+
+            </div>
+          </div>
+        </div>
+      </section>
       <Footer />
     </>
   );

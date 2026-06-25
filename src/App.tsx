@@ -7,6 +7,7 @@ import OccyToken from "./pages/OccyToken";
 import Coin from "./pages/Coin";
 import StaticPage from "./pages/StaticPage";
 import Launchpad from "./pages/Launchpad";
+import Faq from "./pages/Faq";
 export default function App() {
   return (
     <AuthProvider>
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/create-coin" element={<CreateCoin />} />
         {/* <Route path="/occy-token" element={<OccyToken />} /> */}
         <Route path="/launchpad" element={<Launchpad />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/occy-token/:tokenAddress?" element={<OccyToken />} />
         
         <Route path="/:slug" element={<StaticPage />} />
