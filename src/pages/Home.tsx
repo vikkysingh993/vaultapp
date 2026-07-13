@@ -169,17 +169,16 @@ const displayedTokens = React.useMemo(() => {
         </div>
       </section>
 
-      {/* ===== Ecosystem Section ===== */}
+      {/* ===== The OCC Launchpad Section ===== */}
       <section id="about-us2">
         <div className="ecosystem_secrtion p80 text-center" id="token">
           <div className="container">
             <div className="row mb-4">
               <div className="col-md-9 m-auto text-center">
-                <h2 className="hadding mb-3">Occy Token Ecosystem</h2>
+                <h2 className="hadding mb-3">The OCC Launchpad</h2>
                 <p>
-                  Welcome to the OCC Launchpad, <br />
-                    where builders launch innovative projects and a global
-                    community can discover and participate in them — effortlessly.  
+                  Welcome to the OCC Launchpad,{" "}<br />
+                  where builders launch innovative projects and a global community can discover and participate in them — effortlessly.
                 </p>
               </div>
             </div>
@@ -204,17 +203,17 @@ const displayedTokens = React.useMemo(() => {
                 {
                   img: "nextgen_projects.webp",
                   title: "NextGen Projects",
-                  desc: "Step into tomorrow’s crypto advancements through visionary Web3 projects on our platform.",
+                  desc: "Step into tomorrow's crypto advancements through visionary Web3 projects on our platform.",
                 },
                 {
                   img: "partnerships.png",
                   title: "Partnerships",
-                  desc: "We empower projects with strategic partnerships including CEXs, media outlets, and brand ambassadors.Beyond launching groundbreaking projects, we empower their journey with unparalleled support through strategic partnerships with CEXs, Media Partners, and Brand Ambassadors.",
+                  desc: "We empower projects with strategic partnerships, including CEX listings, media outlets, and brand ambassadors.",
                 },
                 {
                   img: "marketing.png",
                   title: "Marketing",
-                  desc: "Boost your project’s visibility and growth with professional promotion strategies, media partnerships, and community-building support.",
+                  desc: "Boost your project's visibility and growth with professional promotion strategies, media partnerships, and community-building support.",
                 },
               ].map((x) => (
                 <div className="col-md-4 col-sm-6 mb-4" key={x.title}>
@@ -230,7 +229,8 @@ const displayedTokens = React.useMemo(() => {
         </div>
       </section>
 
-      {/* ===== Launch Section ===== */}
+
+      {/* ===== Launch Your Token Section ===== */}
       <section className="launch p80 bg_color" id="about-us3-2">
         <div className="container">
           <div className="row align-items-center">
@@ -245,34 +245,98 @@ const displayedTokens = React.useMemo(() => {
             </div>
             <div className="col-md-6">
               <h2 className="tc hadding">
-                Launch <br /> On Occy Token
+                Launch Your Token
               </h2>
               <p className="mb-4">
-                Unleash your project’s potential, seize the spotlight, and secure its future with a fair launch on our cutting-edge platform.Creators also earn ongoing royalties from secondary trading as their token grows.
+                Unleash your project's potential with a fair launch on our cutting-edge platform. Creators earn ongoing royalties from secondary trading as their token grows.
               </p>
-              {/* <a href="/apply-ido" className="btn btn_man">
-                Apply for IDO
-              </a> */}
+              <Link to="/create-coin" className="btn btn_man" id="launch-token-btn">
+                Launch a Coin
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ===== About Us Section ===== */}
+      {/* ===== About OCC Launchpad & Vault Section ===== */}
       <section className="about_us p80" id="about-us">
         <div className="container">
-          <div className="row align-items-center">
-            <div className="col-md-6 order-md-2 text-center">
-              <img src="/img/about.png" alt="about" className="img-fluid" />
+          <div className="row align-items-center mb-5">
+            <div className="col-md-6 order-md-2 text-center mb-4 mb-md-0">
+              <img src="/img/about.png" alt="OCC Vault" className="img-fluid" />
             </div>
             <div className="col-md-6 order-md-1 taj">
-              <h2 className="hadding">{page?.title || "About Us"}</h2>
-             <div
-                dangerouslySetInnerHTML={{ __html: shortContent }}
-              />            
-            <Link to="/about" className="btn btn_man mt-3">
-          View More
-        </Link>
+              <h2 className="hadding">
+                Fair Launches. Secure Access. Powered by OCCY.
+              </h2>
+              <p className="mb-3">
+                OCC Launchpad is Open Clear Capital Inc.'s community-first token launch infrastructure —
+                built for transparent and equitable project deployments in Web3. Integrated with OCC Vault,
+                our non-custodial self-custody wallet, we make it simple and secure for anyone to participate
+                in token launches, staking, and DeFi.
+              </p>
+
+              <div className="vault-feature-list mb-2">
+                <h5 className="vault-feat-head">What We Offer</h5>
+                <ul>
+                  <li>
+                    <span className="vault-feat-icon">🚀</span>
+                    <div>
+                      <strong>OCC Launchpad</strong> — Sonic-native (with Base, Polygon &amp; Ethereum support).
+                      Fair launch mechanics, anti-snipe protection, vesting &amp; liquidity locks, and proper project vetting.
+                    </div>
+                  </li>
+                  <li>
+                    <span className="vault-feat-icon">🔐</span>
+                    <div>
+                      <strong>OCC Vault</strong> — Non-custodial wallet with one-tap staking, multi-chain support,
+                      and seamless integration with the launchpad.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="vault-feature-list mb-4">
+                <h5 className="vault-feat-head">Our Edge</h5>
+                <ul>
+                  <li>
+                    <span className="vault-feat-icon">⚖️</span>
+                    <div>
+                      <strong>Fairness First</strong> — Strong protections against bots and snipers so real communities get fair allocation.
+                    </div>
+                  </li>
+                  <li>
+                    <span className="vault-feat-icon">🛡️</span>
+                    <div>
+                      <strong>Security &amp; Transparency</strong> — You hold your keys. Audited contracts. Real-time on-chain visibility.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="d-flex flex-wrap gap-2">
+                <Link to="/create-coin" className="btn btn_man" id="about-launch-btn">
+                  Launch a Coin
+                </Link>
+                <a
+                  href="https://occvault.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn_outline_man"
+                  id="about-vault-btn"
+                >
+                  Download OCC Vault
+                </a>
+                <a
+                  href="https://occvault.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn_outline_man"
+                  id="about-buy-occy-btn"
+                >
+                  Buy OCCY
+                </a>
+              </div>
             </div>
           </div>
         </div>

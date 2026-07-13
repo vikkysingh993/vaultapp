@@ -236,6 +236,143 @@ span.type1 span, .color_g{
   }
 .p80{ padding: 80px 0;}
 .hadding {    font-weight: bold;    font-size:45px; }
+
+/* ===== Hero Section Additions ===== */
+.hero-sub {
+  font-size: 20px;
+  font-weight: 400;
+  opacity: 0.85;
+  line-height: 1.5;
+}
+.hero-body {
+  font-size: 15px;
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  opacity: 0.75;
+  line-height: 1.8;
+}
+
+/* ===== Outline Button ===== */
+.btn_outline_man,
+.btn_outline_man:focus,
+.btn_outline_man:active {
+  background: transparent !important;
+  border: 2px solid #FF8800;
+  color: #FF8800;
+  border-radius: 12px;
+  padding: 10px 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.btn_outline_man:hover {
+  background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important;
+  color: #000 !important;
+  border-color: transparent;
+}
+
+/* ===== Vault Feature List (About Section) ===== */
+.vault-feature-list {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+.vault-feat-head {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #feb757;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.vault-feature-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.vault-feature-list ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.vault-feature-list ul li:last-child { margin-bottom: 0; }
+.vault-feat-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ===== Footer Vault Download ===== */
+.footer-vault {
+  flex: 0 1 220px;
+  min-width: 200px;
+}
+.footer-vault h5 {
+  color: #ffffff;
+  margin-bottom: 18px;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.vault-store-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.store-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.store-btn:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.24);
+  color: #fff;
+}
+.store-btn i {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.store-btn span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.store-btn span small {
+  font-size: 10px;
+  opacity: 0.7;
+}
+.store-btn span {
+  font-size: 14px;
+  font-weight: 600;
+}
+.vault-link {
+  font-size: 13px;
+  color: #feb757;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+.vault-link:hover {
+  opacity: 0.8;
+  color: #feb757;
+}
+
+/* gap utility if bootstrap version doesn't include it */
+.gap-2 { gap: 0.5rem; }
+
+
 .btn_man, .btn_man:focus, .btn_man:active {
     background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%) !important;
     position: relative;
@@ -402,6 +539,7 @@ ul.list-items li {
   }
   .footer-links,
   .footer-social,
+  .footer-vault,
   .footer-brand {
     min-width: 100%;
   }
