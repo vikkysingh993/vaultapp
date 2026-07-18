@@ -16,6 +16,9 @@ body {
     position: relative;
 }
 .bg_color{background: #0c1221;}
+.text-muted { color: #a0a8bb !important; font-size: 12px; }
+.text-danger { color: #ff7b7b !important; font-size: 12px; }
+
 .btn-outline-secondary {
   background: linear-gradient(135deg, #0095e6 0%, #712af9 100%)!important;
   color: #fff;
@@ -827,16 +830,16 @@ ul.list-items li {
   line-height: 1.5;
 }
 ::-webkit-input-placeholder { 
-  color: #9ca0d2;
+  color: #c8cde8;
 }
 ::-moz-placeholder {
-  color: #9ca0d2;
+  color: #c8cde8;
 }
 :-ms-input-placeholder {
-  color: #9ca0d2;
+  color: #c8cde8;
 }
 :-moz-placeholder { 
-  color: #9ca0d2;
+  color: #c8cde8;
 }
 
 .nav_tab2_right {
@@ -1010,6 +1013,8 @@ ul.list-items li {
     -moz-appearance: auto;
 }
 .form-control:focus{color:#fff;background-color: transparent; border: 1px solid rgb(255 255 255 / 23%);outline:0;}
+.form-control::placeholder { color: #c8cde8; opacity: 1; }
+
 
 .nav-tabs {
   border-bottom: 1px solid rgb(255 255 255 / 14%);

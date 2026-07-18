@@ -361,28 +361,10 @@ export default function CreateCoin() {
                       </select>
                     </div>
 
-                    <div className="form-group mb-3 col-md-6">
-                      <label>
-                        Tagline
-                        <small className="text-muted ms-2">({form.tagline.length}/120)</small>
-                      </label>
-                      <input
-                        className="form-control"
-                        name="tagline"
-                        value={form.tagline}
-                        onChange={handleChange}
-                        placeholder="A short catchy tagline for your token"
-                        required
-                        minLength={10}
-                        maxLength={120}
-                      />
-                      {form.tagline.length > 0 && form.tagline.length < 10 && (
-                        <small className="text-danger">Tagline must be at least 10 characters</small>
-                      )}
-                    </div>
+                    
 
                     <div className="form-group mb-3 col-md-6">
-                      <label>Project Category</label>
+                      <label>Token Category</label>
                       <select
                         className="form-control"
                         name="projectCategory"
@@ -401,7 +383,22 @@ export default function CreateCoin() {
                         <option value="other">Other</option>
                       </select>
                     </div>
+                    <div className="form-group mb-3 col-md-6">
+                      <label>
+                        Tagline
+                        <small className="text-muted ms-2">(Related to the category)</small>
+                      </label>
+                      <input
+                        className="form-control"
+                        name="tagline"
+                        value={form.tagline}
+                        onChange={handleChange}
+                        placeholder="A short catchy tagline for your token"
+                      />
+                    </div>
                   </div>
+
+                  
 
                   <div className="form-group mb-3 col-md-12">
                     <label>
