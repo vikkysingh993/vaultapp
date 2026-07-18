@@ -362,17 +362,23 @@ export default function CreateCoin() {
                     </div>
 
                     <div className="form-group mb-3 col-md-6">
-                      <label>Tagline</label>
+                      <label>
+                        Tagline
+                        <small className="text-muted ms-2">({form.tagline.length}/120)</small>
+                      </label>
                       <input
                         className="form-control"
                         name="tagline"
                         value={form.tagline}
                         onChange={handleChange}
-                        placeholder="Enter Tagline"
+                        placeholder="A short catchy tagline for your token"
                         required
-                        minLength={100}
-                        maxLength={200}
+                        minLength={10}
+                        maxLength={120}
                       />
+                      {form.tagline.length > 0 && form.tagline.length < 10 && (
+                        <small className="text-danger">Tagline must be at least 10 characters</small>
+                      )}
                     </div>
 
                     <div className="form-group mb-3 col-md-6">
@@ -401,23 +407,23 @@ export default function CreateCoin() {
                     <label>
                       Token Description
                       <small className="text-muted ms-2">
-                        ({form.description.length}/200)
+                        ({form.description.length}/1000)
                       </small>
                     </label>
                     <textarea
                       className="form-control"
                       name="description"
-                      rows={4}
+                      rows={5}
                       minLength={100}
-                      maxLength={200}
+                      maxLength={1000}
                       value={form.description}
                       onChange={handleChange}
-                      placeholder="Enter description (100–200 characters)"
+                      placeholder="Describe your token (minimum 100 characters)"
                       required
                     />
                     {form.description.length > 0 && form.description.length < 100 && (
                       <small className="text-danger">
-                        Minimum 100 characters required
+                        Description must be at least 100 characters ({100 - form.description.length} more needed)
                       </small>
                     )}
                   </div>
