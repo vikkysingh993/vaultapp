@@ -10,12 +10,38 @@ export default function StaticPage() {
   const [page, setPage] = useState(null);
 
   useEffect(() => {
+    setPage(null); // reset on slug change so skeleton shows on every navigation
     api.get(`/pages/${slug}`)
       .then(res => setPage(res.data?.data || res.data))
       .catch(() => setPage(false));
   }, [slug]);
 
-  if (page === null) return null;
+  // ── Loading skeleton — prevents blank flash on navigation ──
+  if (page === null)
+    return (
+      <>
+        <Navbar />
+        <section className="static-page">
+          <div className="page-hero page-hero--skeleton">
+            <div className="container hero-copy">
+              <div className="skeleton-line skeleton-badge" />
+              <div className="skeleton-line skeleton-title" />
+              <div className="skeleton-line skeleton-intro" />
+            </div>
+          </div>
+          <div className="container page-body">
+            <div className="page-card">
+              <div className="skeleton-line skeleton-body" />
+              <div className="skeleton-line skeleton-body skeleton-body--short" />
+              <div className="skeleton-line skeleton-body" />
+              <div className="skeleton-line skeleton-body skeleton-body--mid" />
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+
   if (page === false)
     return (
       <>
@@ -31,7 +57,7 @@ export default function StaticPage() {
   return (
     <>
       <Navbar />
-      <section className="static-page">
+      <section className="static-page static-page--loaded">
         <div className="page-hero">
           <div className="container hero-copy">
             <span className="page-badge">Launchpad Guide</span>
