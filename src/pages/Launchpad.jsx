@@ -156,7 +156,7 @@ const slickNext = () => $(sliderRef.current).slick("slickNext");
                         </h3>
 
                         <div className="color1">
-                          Market Cap: ${token.marketCap || "0"}
+                          Market Cap: ${token.marketCap ? Number(token.marketCap).toLocaleString(undefined, { maximumFractionDigits: 2 }) : "0"}
                         </div>
 
                         <div className="small text-muted">

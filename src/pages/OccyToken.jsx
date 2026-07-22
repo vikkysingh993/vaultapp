@@ -286,6 +286,12 @@ export default function OccyToken() {
                       </span>
                     </div>
                     <div className="token-stat">
+                      <span className="token-stat-label">Market Cap</span>
+                      <span className="token-stat-value color1">
+                        ${token.marketCap ? Number(token.marketCap).toLocaleString(undefined, { maximumFractionDigits: 2 }) : "0"}
+                      </span>
+                    </div>
+                    <div className="token-stat">
                       <span className="token-stat-label">Status</span>
                       <span className={`token-stat-value token-status token-status--${(token.status || "").toLowerCase()}`}>
                         {token.status || "—"}
