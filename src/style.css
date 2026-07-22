@@ -18,6 +18,18 @@ body {
 .bg_color{background: #0c1221;}
 .text-muted { color: #a0a8bb !important; font-size: 12px; }
 .text-danger { color: #ff7b7b !important; font-size: 12px; }
+.sub-txt {
+  font-size: 14px;
+  font-weight: 700;
+  margin-left: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ffb347 0%, #fff 60%, #feb757 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(254,183,87,0.45));
+}
 
 .btn-outline-secondary {
   background: linear-gradient(135deg, #0095e6 0%, #712af9 100%)!important;
@@ -1768,11 +1780,18 @@ body .css-1dimb5e-singleValue{color:#fff;}
     margin-right: 10px;
     border-radius: 10px;
 }
-.coin_box h3{    font-size: 1rem;}
+.coin_box h3 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .coin_box p {
     font-size: 0.8rem;
-    line-height: 1.3;
+    line-height: 1.4;
     opacity: 0.8;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    max-height: 2.8em;
+    margin-bottom: 0;
 }
 .upload_box {
     position: relative;
@@ -2035,26 +2054,51 @@ span.type1 { height: 40px;}
  
 
 
-.slider-nav .coin_box { 
-    margin: 0 10px;
+.slider-nav .coin_box {
+    margin: 0 8px;
+    overflow: hidden;
+    min-width: 0;
 }
-.in_page .slick-list { 
-    margin: 0 -10px;
+.in_page .slick-list {
+    margin: 0 -8px;
+    overflow: hidden;
 }
-.slider-nav .slick-arrow {
-    position: absolute;
-    right: 0;
-    top: -55px;
-    font-size: 0;
+
+/* Arrow container — sits to the right of the "Now Trending" heading */
+.slider-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.slider-arrows {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+.slider-arrows button {
+    width: 34px;
+    height: 34px;
     border: 0;
-    background: hsl(0deg 0% 100% / 5%);
+    border-radius: 8px;
+    background: hsl(0deg 0% 100% / 8%);
     color: #fff;
-    padding: 2px 7px;
-    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
 }
-.slider-nav .slick-prev{ right: 45px; }
-.slider-nav .slick-prev:after{content:"\F284" ;font-family: bootstrap-icons !important;      font-size: 20px;}
-.slider-nav .slick-next:after{content:"\F285" ;font-family: bootstrap-icons !important;       font-size: 20px;}
+.slider-arrows button:hover {
+    background: hsl(0deg 0% 100% / 16%);
+}
+
+/* Hide slick's own arrows — we drive them via custom buttons */
+.slider-nav .slick-prev,
+.slider-nav .slick-next {
+    display: none !important;
+}
 
 .token_tab button{    min-width: 80px;
     padding: 7px 15px;

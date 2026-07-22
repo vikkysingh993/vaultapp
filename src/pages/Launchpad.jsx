@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { encryptAddress } from "../utils/crypto";
 import $ from "jquery";
@@ -16,6 +16,7 @@ const [loading, setLoading] = useState(true);
 const [activeTab, setActiveTab] = useState("all");
 const [searchQuery, setSearchQuery] = useState("");
 const navigate = useNavigate();
+const sliderRef = useRef(null);
 useEffect(() => {
   fetchTokens();
 }, []);
@@ -58,7 +59,7 @@ useEffect(() => {
 useEffect(() => {
   if (!tokens.length) return;
 
-  const $slider = $(".slider-nav");
+  const $slider = $(sliderRef.current);
 
   if ($slider.hasClass("slick-initialized")) {
     $slider.slick("unslick");
@@ -68,7 +69,11 @@ useEffect(() => {
     infinite: true,
     slidesToShow: 3,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false, // controlled by custom buttons
+    responsive: [
+      { breakpoint: 992, settings: { slidesToShow: 2 } },
+      { breakpoint: 600, settings: { slidesToShow: 1 } },
+    ],
   });
 
   return () => {
@@ -77,6 +82,9 @@ useEffect(() => {
     }
   };
 }, [tokens]);
+
+const slickPrev = () => $(sliderRef.current).slick("slickPrev");
+const slickNext = () => $(sliderRef.current).slick("slickNext");
 
   return (
     <>
@@ -106,12 +114,22 @@ useEffect(() => {
             </div>
           </div>
 
-          <h3 className="mb-3">Now Trending</h3>
+          <div className="slider-heading">
+            <h3 className="mb-0">Now Trending</h3>
+            <div className="slider-arrows">
+              <button onClick={slickPrev} aria-label="Previous">
+                <i className="bi bi-chevron-left" />
+              </button>
+              <button onClick={slickNext} aria-label="Next">
+                <i className="bi bi-chevron-right" />
+              </button>
+            </div>
+          </div>
 
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <div className="slider-nav">
+            <div className="slider-nav" ref={sliderRef}>
               {tokens.map((token) => (
                 <div key={token.id}>
                   <div
@@ -132,7 +150,7 @@ useEffect(() => {
                         />
                       </div>
 
-                      <div>
+                      <div style={{ minWidth: 0, flex: 1 }}>
                         <h3>
                           {token.name} ({token.symbol})
                         </h3>
@@ -144,12 +162,9 @@ useEffect(() => {
                         <div className="small text-muted">
                           {timeAgo(token.createdAt)}
                         </div>
-
                       </div>
                     </div>
-                    <p className="mb-0 small" style={{ height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                      {token.description || 'No description available'}
-                    </p>
+                    <p>{token.description || "No description available"}</p>
                   </div>
                 </div>
               ))}
