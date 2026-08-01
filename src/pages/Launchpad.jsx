@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { encryptAddress } from "../utils/crypto";
+import { useAuth } from "../context/AuthContext";
 import $ from "jquery";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,20 +13,31 @@ import api from "../config/axios";
 const Launchpad = () => {
 
 const [tokens, setTokens] = useState([]);
+const [trendingTokens, setTrendingTokens] = useState([]);
 const [loading, setLoading] = useState(true);
+const [trendingLoading, setTrendingLoading] = useState(true);
 const [activeTab, setActiveTab] = useState("all");
 const [searchQuery, setSearchQuery] = useState("");
 const navigate = useNavigate();
-useEffect(() => {
-  fetchTokens();
-}, []);
+const { user } = useAuth();
+
+// Get user wallet address from session/auth
+const getUserWallet = useCallback(() => {
+  if (user?.walletAddress) return user.walletAddress;
+  // Try connected wallet from sessionStorage
+  const stored = sessionStorage.getItem("authUser");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.walletAddress || "";
+    } catch { return ""; }
+  }
+  return "";
+}, [user]);
 
 const handleTokenClick = (token) => {
   const encrypted = encryptAddress(token.tokenAddress);
-
-  // session backup
   sessionStorage.setItem("latestToken", JSON.stringify(token));
-
   navigate(`/occy-token/${encrypted}`);
 };
 
@@ -34,12 +46,36 @@ const handleSearch = (event) => {
   fetchTokens(activeTab, searchQuery.trim());
 };
 
+// Fetch trending tokens (coins with actual buy/sell activity)
+const fetchTrendingTokens = async () => {
+  try {
+    setTrendingLoading(true);
+    const res = await api.get(`/launchpad/tokens?type=trending`);
+    if (res.data.success) {
+      setTrendingTokens(res.data.data);
+    }
+  } catch (e) {
+    console.error(e);
+    setTrendingTokens([]);
+  } finally {
+    setTrendingLoading(false);
+  }
+};
+
+// Fetch tokens for the active tab
 const fetchTokens = async (type = "all", query = "") => {
   try {
     setLoading(true);
-
     const queryString = query ? `&search=${encodeURIComponent(query)}` : "";
-    const res = await api.get(`/launchpad/tokens?type=${type}${queryString}`);
+
+    // For "trade" tab, pass wallet address
+    let walletParam = "";
+    if (type === "trade") {
+      const wallet = getUserWallet();
+      walletParam = wallet ? `&walletAddress=${encodeURIComponent(wallet)}` : "";
+    }
+
+    const res = await api.get(`/launchpad/tokens?type=${type}${queryString}${walletParam}`);
 
     if (res.data.success) {
       setTokens(res.data.data);
@@ -47,16 +83,23 @@ const fetchTokens = async (type = "all", query = "") => {
   } catch (e) {
     console.error(e);
   } finally {
-    setLoading(false); // 🔥 THIS WAS MISSING
+    setLoading(false);
   }
 };
 
+// Fetch trending on mount
+useEffect(() => {
+  fetchTrendingTokens();
+}, []);
+
+// Fetch tab tokens when tab changes
 useEffect(() => {
   fetchTokens(activeTab);
 }, [activeTab]);
 
+// Initialize slick slider for trending tokens
 useEffect(() => {
-  if (!tokens.length) return;
+  if (!trendingTokens.length) return;
 
   const $slider = $(".slider-nav");
 
@@ -66,9 +109,12 @@ useEffect(() => {
 
   $slider.slick({
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: Math.min(3, trendingTokens.length),
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    pauseOnHover: true,
   });
 
   return () => {
@@ -76,7 +122,7 @@ useEffect(() => {
       $slider.slick("unslick");
     }
   };
-}, [tokens]);
+}, [trendingTokens]);
 
   return (
     <>
@@ -106,54 +152,71 @@ useEffect(() => {
             </div>
           </div>
 
-          <h3 className="mb-3">Now Trending</h3>
+          {/* === Now Trending — only shown when coins have actual swap activity === */}
+          {!trendingLoading && trendingTokens.length > 0 && (
+            <>
+              <h3 className="mb-3">Now Trending</h3>
+              <div className="slider-nav">
+                {trendingTokens.map((token) => (
+                  <div key={token.id}>
+                    <div
+                      className="coin_box"
+                      onClick={() => handleTokenClick(token)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <div className="d-flex mb-2">
+                        <div className="text-center coin_box_left">
+                          <img
+                            src={
+                              token.logo
+                                ? import.meta.env.VITE_API_IMG_URL + token.logo
+                                : "/img/about.png"
+                            }
+                            className="img-fluid"
+                            alt={token.name}
+                          />
+                        </div>
 
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            <div className="slider-nav">
-              {tokens.map((token) => (
-                <div key={token.id}>
-                  <div
-                    className="coin_box"
-                    onClick={() => handleTokenClick(token)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="d-flex mb-2">
-                      <div className="text-center coin_box_left">
-                        <img
-                          src={
-                            token.logo
-                              ? import.meta.env.VITE_API_IMG_URL + token.logo
-                              : "/img/about.png"
-                          }
-                          className="img-fluid"
-                          alt={token.name}
-                        />
+                        <div>
+                          <h3>
+                            {token.name} ({token.symbol})
+                          </h3>
+
+                          <div className="color1">
+                            Market Cap: ${token.marketCap || "0"}
+                          </div>
+
+                          <div className="small text-muted">
+                            {timeAgo(token.createdAt)}
+                          </div>
+                        </div>
                       </div>
+                      {token.tagline && (
+                        <p className="mb-1 small coin_tagline">
+                          {token.tagline}
+                        </p>
+                      )}
+                      <p className="mb-0 small coin_description">
+                        {token.description || 'No description available'}
+                      </p>
 
-                      <div>
-                        <h3>
+                      {/* Hover popup with full description */}
+                      <div className="coin_hover_popup">
+                        <h3 style={{fontSize: '0.95rem', marginBottom: '8px'}}>
                           {token.name} ({token.symbol})
                         </h3>
-
-                        <div className="color1">
-                          Market Cap: ${token.marketCap || "0"}
-                        </div>
-
-                        <div className="small text-muted">
-                          {timeAgo(token.createdAt)}
-                        </div>
-
+                        {token.tagline && (
+                          <p className="popup_tagline">{token.tagline}</p>
+                        )}
+                        <p className="popup_desc">
+                          {token.description || 'No description available'}
+                        </p>
                       </div>
                     </div>
-                    <p className="mb-0 small" style={{ height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                      {token.description || 'No description available'}
-                    </p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
 
@@ -174,46 +237,76 @@ useEffect(() => {
             ))}
           </div>
 
+          {loading ? (
+            <p>Loading...</p>
+          ) : tokens.length === 0 ? (
+            <p className="text-center op_05">No coins found.</p>
+          ) : (
+            <div className="row">
+              {tokens.map((token) => (
+                <div className="col-md-4 mb-4" key={token.id}>
+                    <div
+                      className="coin_box coin_box_big"
+                      onClick={() => handleTokenClick(token)}
+                      style={{ cursor: "pointer" }}
+                    >
+                    <div className="d-flex mb-2">
+                      <div className="coin_box_left">
+                        <img
+                          src={
+                            token.logo
+                              ? import.meta.env.VITE_API_IMG_URL + token.logo
+                              : "/img/about.png"
+                          }
+                          alt={token.name}
+                          className="img-fluid"
+                        />
+                      </div>
 
-          <div className="row">
-            {tokens.map((token) => (
-              <div className="col-md-4 mb-4" key={token.id}>
-                  <div
-                    className="coin_box coin_box_big"
-                    onClick={() => handleTokenClick(token)}
-                    style={{ cursor: "pointer" }}
-                  >
-                  <div className="d-flex mb-2">
-                    <div className="coin_box_left">
-                      <img
-                        src={
-                          token.logo
-                            ? import.meta.env.VITE_API_IMG_URL + token.logo
-                            : "/img/about.png"
-                        }
-                        alt={token.name}
-                        className="img-fluid"
-                      />
+                      <div className="ps-1">
+                        <h3>{token.name} ({token.symbol})</h3>
+
+                        <div className="color1" style={{ fontSize: '0.85rem' }}>
+                          Market Cap: ${token.marketCap || "0"}
+                        </div>
+
+                        <div className="op_05" style={{ fontSize: '0.85rem' }}>
+                          {new Date(token.createdAt).toLocaleDateString()}
+                        </div>
+
+                        <div className="op_05" style={{ fontSize: '0.85rem' }}>
+                          {token.liquidityResponse
+                            ? "Liquidity Added"
+                            : "No Liquidity"}
+                        </div>
+                      </div>
                     </div>
+                    {token.tagline && (
+                      <p className="mb-1 small coin_tagline">
+                        {token.tagline}
+                      </p>
+                    )}
+                    <p className="mb-0 small coin_description">
+                      {token.description || 'No description available'}
+                    </p>
 
-                    <div className="ps-1">
-                      <h3>{token.name} ({token.symbol})</h3>
-
-                      <div className="op_05">
-                        {new Date(token.createdAt).toLocaleDateString()}
-                      </div>
-
-                      <div className="op_05">
-                        {token.liquidityResponse
-                          ? "Liquidity Added"
-                          : "No Liquidity"}
-                      </div>
+                    {/* Hover popup with full description */}
+                    <div className="coin_hover_popup">
+                      <h3 style={{fontSize: '0.95rem', marginBottom: '8px'}}>
+                        {token.name} ({token.symbol})
+                      </h3>
+                      {token.tagline && (
+                        <p className="popup_tagline">{token.tagline}</p>
+                      )}
+                      <p className="popup_desc">
+                        {token.description || 'No description available'}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
         </div>
       </section>

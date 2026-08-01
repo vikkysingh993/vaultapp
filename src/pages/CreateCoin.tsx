@@ -11,7 +11,6 @@ import api from "../config/axios";
 import { parseBlockchainError } from "../utils/parseBlockchainError";
 
 // ================= CONFIG =================
-const FREE_LIMIT = 1000;
 const PLATFORM_FEE_OCC = "10";
 const PLATFORM_FEE_USDT = "10";
 
@@ -106,32 +105,11 @@ export default function CreateCoin() {
     });
   };
 
-  // ================= OCC BALANCE =================
-  const getOnChainOccBalance = async (signer: ethers.Signer) => {
-    const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
-    const userAddr = await signer.getAddress();
-    let decimals = 18;
-    try {
-      decimals = await token.decimals();
-    } catch {
-      console.warn("decimals() failed, using 18");
-    }
-    const bal = await token.balanceOf(userAddr);
-    return Number(ethers.formatUnits(bal, decimals));
-  };
-
   // ================= PAY FEE =================
   const payFee = async (signer: ethers.Signer, chain: string) => {
     const userAddr = await signer.getAddress();
 
     if (chain === "sonic") {
-      const balance = await getOnChainOccBalance(signer);
-
-      if (balance >= FREE_LIMIT) {
-        console.log("Free deployment — OCC balance sufficient");
-        return { feePaid: "0", feeTxHash: "FREE", feeType: "FREE" };
-      }
-
       const token = new ethers.Contract(OCC_TOKEN_ADDRESS, ERC20_ABI, signer);
       let decimals = 18;
       try {
@@ -142,8 +120,9 @@ export default function CreateCoin() {
       const amount = ethers.parseUnits(PLATFORM_FEE_OCC, decimals);
       const bal = await token.balanceOf(userAddr);
       if (bal < amount) {
+        const occBal = Number(ethers.formatUnits(bal, decimals));
         throw new Error(
-          `Insufficient OCC. Need ${PLATFORM_FEE_OCC}, have ${balance.toFixed(2)}`
+          `Insufficient OCC. Need ${PLATFORM_FEE_OCC}, have ${occBal.toFixed(2)}`
         );
       }
       const tx = await token.transfer(BACKEND_WALLET, amount);
@@ -208,13 +187,14 @@ export default function CreateCoin() {
       const signer = await freshProvider.getSigner();
       const userAddress = await signer.getAddress();
 
-      // Pay fee
-      setDeployStep("Confirming platform fee");
+      // Step 1: Pay platform fee (direct transfer to backend wallet)
+      // Backend will then: approve(newToken→router) → addLiquidity → approve(LP→lock) → createLock
+      setDeployStep("Step 1/4 — Paying platform fee");
       const feeResult = await payFee(signer, form.chain);
       console.log("Fee result:", feeResult);
 
-      // Deploy token — mint entire supply to BACKEND_WALLET so server can distribute
-      setDeployStep("Deploying token contract");
+      // Step 2: Deploy token — mint entire supply to BACKEND_WALLET so server can distribute
+      setDeployStep("Step 2/4 — Deploying token contract");
       const factory = new ethers.ContractFactory(
         tokenArtifact.abi,
         tokenArtifact.bytecode,
@@ -232,8 +212,10 @@ export default function CreateCoin() {
       const tokenAddress = await contract.getAddress();
       console.log("Token deployed at:", tokenAddress);
 
-      // Save to backend
-      setDeployStep("Saving coin details");
+      // Step 3 & 4: Backend runs the full sequence:
+      //   approve(newToken→router) → addLiquidity(50%) → approve(LP→lock) → createLock
+      //   → transfer(20%→dev) → transfer(30%→burn)
+      setDeployStep("Step 3/4 — Adding liquidity & locking LP");
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("symbol", form.symbol);
@@ -259,6 +241,7 @@ export default function CreateCoin() {
         },
       });
 
+      setDeployStep("Step 4/4 — Finalising");
       popupSuccess("Token Created", "", () => navigate("/occy-token"));
     } catch (err) {
       console.error("Deploy error:", err);
@@ -460,44 +443,40 @@ export default function CreateCoin() {
                       <label>Website</label>
                       <input
                         className="form-control"
-                        type="url"
+                        type="text"
                         name="website"
                         value={form.website}
                         onChange={handleChange}
-                        placeholder="https://example.com"
                       />
                     </div>
                     <div className="form-group mb-3 col-md-6">
                       <label>Twitter</label>
                       <input
                         className="form-control"
-                        type="url"
+                        type="text"
                         name="twitter"
                         value={form.twitter}
                         onChange={handleChange}
-                        placeholder="https://twitter.com/username"
                       />
                     </div>
                     <div className="form-group mb-3 col-md-6">
                       <label>Telegram</label>
                       <input
                         className="form-control"
-                        type="url"
+                        type="text"
                         name="telegram"
                         value={form.telegram}
                         onChange={handleChange}
-                        placeholder="https://t.me/username"
                       />
                     </div>
                     <div className="form-group mb-3 col-md-6">
                       <label>Discord</label>
                       <input
                         className="form-control"
-                        type="url"
+                        type="text"
                         name="discord"
                         value={form.discord}
                         onChange={handleChange}
-                        placeholder="https://discord.com/invite/username"
                       />
                     </div>
                   </div>
