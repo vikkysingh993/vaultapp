@@ -9,6 +9,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import api from "../config/axios";
 import { parseBlockchainError } from "../utils/parseBlockchainError";
+import { encryptAddress } from "../utils/crypto";
 
 // ================= CONFIG =================
 const PLATFORM_FEE_OCC = "10";
@@ -251,14 +252,20 @@ export default function CreateCoin() {
       formData.append("discord", form.discord);
       if (form.logo) formData.append("logo", form.logo);
 
-      await api.post("/token-flow/create-token-flow", formData, {
+      const res = await api.post("/token-flow/create-token-flow", formData, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
         },
       });
 
       setDeployStep("Step 4/4 — Finalising");
-      popupSuccess("Token Created", "", () => navigate("/occy-token"));
+      
+      if (res.data && res.data.token) {
+        sessionStorage.setItem("latestToken", JSON.stringify(res.data.token));
+      }
+      
+      const encrypted = encryptAddress(tokenAddress);
+      popupSuccess("Token Created", "", () => navigate(`/occy-token/${encrypted}`));
     } catch (err) {
       console.error("Deploy error:", err);
       const { title, message } = parseBlockchainError(err);
