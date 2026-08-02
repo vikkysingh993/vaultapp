@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 import { useAppKitProvider } from "@reown/appkit/react";
@@ -42,7 +42,7 @@ const BACKEND_WALLET: string =
 const ERC20_ABI = [
   "function decimals() view returns (uint8)",
   "function balanceOf(address) view returns (uint256)",
-  "function transfer(address,uint256) returns (bool)",
+  "function transfer(address,uint256)",
 ];
 
 const CHAINS: Record<string, { chainId: string; name: string }> = {
@@ -72,6 +72,22 @@ export default function CreateCoin() {
   });
   const [deploying, setDeploying] = useState(false);
   const [deployStep, setDeployStep] = useState("Preparing deployment");
+  const [marketCapMultiplier, setMarketCapMultiplier] = useState(1);
+
+  // Fetch market cap multiplier on load
+  useEffect(() => {
+    const fetchMultiplier = async () => {
+      try {
+        const res = await api.get("/settings");
+        if (res.data?.data?.marketCapMultiplier) {
+          setMarketCapMultiplier(Number(res.data.data.marketCapMultiplier));
+        }
+      } catch (err) {
+        console.warn("Could not fetch market cap multiplier", err);
+      }
+    };
+    fetchMultiplier();
+  }, []);
 
   // ================= HELPERS =================
   const getWalletProvider = (): Eip1193Provider | null => {
@@ -325,6 +341,11 @@ export default function CreateCoin() {
                         placeholder="Enter Supply"
                         required
                       />
+                      {form.supply && Number(form.supply) > 0 && (
+                        <small className="text-success d-block mt-1">
+                          Estimated Market Cap: ${(10 * Number(form.supply) * marketCapMultiplier).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </small>
+                      )}
                     </div>
 
                     <div className="form-group mb-3 col-md-6">

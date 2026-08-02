@@ -1741,7 +1741,20 @@ body .css-1dimb5e-singleValue{color:#fff;}
 }
 .features_table tr td:first-child, .features_table tr th:first-child{    width: 40%;border-left: none;}
 .features_table .fa-check-circle{    margin-left: 10px;}
-.logo{ margin-right: 10px;    height: 55px; }
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.logo{ margin-right: 10px; height: 55px; }
+.sub-txt {
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #FF8800 0%, #FFC787 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+}
   input[type=number]::-webkit-inner-spin-button, 
   input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none;
