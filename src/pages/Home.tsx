@@ -118,9 +118,9 @@ const displayedTokens = React.useMemo(() => {
           <h2 className="tc hadding text-center mb-4">New Coins</h2>
           <div className="row align-items-center">
             {displayedTokens.map((token, i) => (
-              <div className="col-md-4 mb-3" key={token.id || i}>
+              <div className="col-md-4 mb-3 d-flex align-items-stretch" key={token.id || i}>
                 <div
-                  className="coin_box coin_box_big h-100"
+                  className="coin_box coin_box_big h-100 w-100 d-flex flex-column"
                   onClick={() => handleTokenClick(token)}
                   style={{ cursor: token?.dummy ? "default" : "pointer" }}
                 >

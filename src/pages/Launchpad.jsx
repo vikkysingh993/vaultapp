@@ -252,9 +252,9 @@ useEffect(() => {
           ) : (
             <div className="row">
               {tokens.map((token) => (
-                <div className="col-md-4 mb-4" key={token.id}>
+                <div className="col-md-4 mb-4 d-flex align-items-stretch" key={token.id}>
                     <div
-                      className="coin_box coin_box_big h-100"
+                      className="coin_box coin_box_big h-100 w-100 d-flex flex-column"
                       onClick={() => handleTokenClick(token)}
                       style={{ cursor: "pointer" }}
                     >
