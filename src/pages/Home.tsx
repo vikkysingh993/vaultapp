@@ -143,11 +143,6 @@ const displayedTokens = React.useMemo(() => {
                         </span>
                         {token?.dummy ? "0.0" : (token?.marketCap || "0")}
                       </div>
-                      <div>
-                        <span className="text-[#9DA3AE]">
-                          {token?.dummy ? "---" : `Supply: ${token?.supply || ""}`}
-                        </span>
-                      </div>
                     </div>
                   </div>
                   <p className="mb-0 text-truncate" style={{ maxWidth: '100%' }}>
