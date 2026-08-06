@@ -143,6 +143,11 @@ const displayedTokens = React.useMemo(() => {
                         </span>
                         {token?.dummy ? "0.0" : (token?.marketCap || "0")}
                       </div>
+                      <div>
+                        <span className="text-[#9DA3AE]" style={{ fontSize: '0.85rem' }}>
+                          {token?.dummy ? "---" : (token?.createdAt ? new Date(token.createdAt).toLocaleDateString() : "")}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   <p className="mb-0 text-truncate" style={{ maxWidth: '100%' }}>
