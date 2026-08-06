@@ -116,7 +116,7 @@ const displayedTokens = React.useMemo(() => {
       <section className="launch p80 bg_color" id="about-us3">
         <div className="container">
           <h2 className="tc hadding text-center mb-4">New Coins</h2>
-          <div className="row align-items-center">
+          <div className="row">
             {displayedTokens.map((token, i) => (
               <div className="col-md-4 mb-3 d-flex align-items-stretch" key={token.id || i}>
                 <div
