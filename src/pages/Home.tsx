@@ -120,7 +120,7 @@ const displayedTokens = React.useMemo(() => {
             {displayedTokens.map((token, i) => (
               <div className="col-md-4 mb-3" key={token.id || i}>
                 <div
-                  className="coin_box"
+                  className="coin_box coin_box_big"
                   onClick={() => handleTokenClick(token)}
                   style={{ cursor: token?.dummy ? "default" : "pointer" }}
                 >
@@ -150,11 +150,31 @@ const displayedTokens = React.useMemo(() => {
                       </div>
                     </div>
                   </div>
-                  <p className="mb-0 text-truncate" style={{ maxWidth: '100%' }}>
+                  
+                  {!token?.dummy && token?.tagline && (
+                    <p className="mb-1 small coin_tagline">
+                      {token.tagline}
+                    </p>
+                  )}
+                  <p className="mb-0 small coin_description">
                     {token?.dummy
                       ? "More tokens will appear here soon."
-                      : (token?.tagline || token?.description || "")}
+                      : (token?.description || "No description available")}
                   </p>
+
+                  {!token?.dummy && (
+                    <div className="coin_hover_popup">
+                      <h3 style={{fontSize: '0.95rem', marginBottom: '8px'}}>
+                        {token.name} ({token.symbol})
+                      </h3>
+                      {token.tagline && (
+                        <p className="popup_tagline">{token.tagline}</p>
+                      )}
+                      <p className="popup_desc">
+                        {token.description || 'No description available'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

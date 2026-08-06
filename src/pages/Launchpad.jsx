@@ -108,13 +108,21 @@ useEffect(() => {
   }
 
   $slider.slick({
-    infinite: true,
-    slidesToShow: Math.min(3, trendingTokens.length),
+    infinite: trendingTokens.length > 3,
+    slidesToShow: 3,
     slidesToScroll: 1,
     arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
     pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        }
+      }
+    ]
   });
 
   return () => {
