@@ -128,7 +128,8 @@ const displayedTokens = React.useMemo(() => {
                     <div className="text-center coin_box_left">
                       <img
                         className="img-fluid"
-                        src={token.logo ? import.meta.env.VITE_API_IMG_URL + token.logo : "/img/about.png"}
+                        src={token.logo ? `${import.meta.env.VITE_API_IMG_URL || ''}${token.logo}` : "/img/about.png"}
+                        onError={(e) => { e.currentTarget.src = "/img/about.png"; }}
                         alt="about"
                       />
                     </div>
@@ -140,19 +141,19 @@ const displayedTokens = React.useMemo(() => {
                         <span className="font-medium text-green-300">
                           market cap: $
                         </span>
-                        {token?.dummy ? "0.0" : "2.3M"}
+                        {token?.dummy ? "0.0" : (token?.marketCap || "0")}
                       </div>
                       <div>
                         <span className="text-[#9DA3AE]">
-                          {token?.dummy ? "---" : "18"}
+                          {token?.dummy ? "---" : `Supply: ${token?.supply || ""}`}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="mb-0">
+                  <p className="mb-0 text-truncate" style={{ maxWidth: '100%' }}>
                     {token?.dummy
                       ? "More tokens will appear here soon."
-                      : "New South Park Episode Takes Aim at Memecoins"}
+                      : (token?.tagline || token?.description || "")}
                   </p>
                 </div>
               </div>
